@@ -7,6 +7,8 @@ target 'Did I Drunk This' do
 
   # Pods for Did I Drunk This
   pod 'OAuthSwift', '~> 1.2.0'
+  pod 'Alamofire', '~> 4.7'
+  pod 'KeychainAccess'
 
   target 'Did I Drunk ThisTests' do
     inherit! :search_paths
