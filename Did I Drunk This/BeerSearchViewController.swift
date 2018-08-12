@@ -10,6 +10,7 @@ import UIKit
 import os.log
 
 import KeychainAccess
+import OAuthSwift
 import OnboardKit
 
 class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITableViewDataSource, UITableViewDelegate {
@@ -37,12 +38,16 @@ class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITab
         navigationItem.searchController = searchController
         definesPresentationContext = true
         
+        // if this is the first time opening the app, trigger the onboard/login
         _ = getUntappdToken()
     }
     
     // MARK: - Private methods
     
     private func getUntappdToken() -> String {
+        // MARK: delete me: force reset token
+//        keychain[string: "untappd-token"] = nil
+        
         var token = String()
         
         if let storedToken = try? keychain.get("untappd-token"){
@@ -78,17 +83,27 @@ class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITab
     }
     
     private func loginWithUntappd(_ completion: @escaping (_ success: Bool, _ error: Error?) -> Void) {
-        let alert = UIAlertController(title: "Login?",
-                                      message: "hello this is definitely a real login for sure",
-                                      preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Yes", style: .default) { _ in
-            completion(true, nil)
-            self.presentedViewController?.dismiss(animated: true)
-        })
-        alert.addAction(UIAlertAction(title: "No", style: .cancel) { _ in
-            completion(false, nil)
-        })
-        presentedViewController?.present(alert, animated: true)
+        // create an instance and retain it
+        let oauthswift = OAuth2Swift(
+            consumerKey:    K.Untappd.ClientID,
+            consumerSecret: K.Untappd.ClientSecret,
+            authorizeUrl:   K.Untappd.Endpoint.authenticate,
+            responseType:   "token"
+        )
+        oauthswift.authorizeURLHandler = SafariURLHandler(viewController: self.presentedViewController! , oauthSwift: oauthswift)
+        
+        let _ = oauthswift.authorize(
+            withCallbackURL: URL(string: "dididrunkthis://oauth-callback/untappd")!,
+            scope: "",
+            state:"DIDIDRUNKTHIS",
+            success: { credential, response, parameters in
+                self.keychain[string: "untappd-token"] = credential.oauthToken
+                self.presentedViewController!.dismiss(animated: true)
+            },
+                failure: { error in
+                    fatalError(error.localizedDescription)
+            }
+        )
     }
     
     func searchBarIsEmpty() -> Bool {
