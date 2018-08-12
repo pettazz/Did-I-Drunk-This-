@@ -9,6 +9,7 @@ target 'Did I Drunk This' do
   pod 'OAuthSwift', '~> 1.2.0'
   pod 'Alamofire', '~> 4.7'
   pod 'KeychainAccess'
+  pod 'OnboardKit'
 
   target 'Did I Drunk ThisTests' do
     inherit! :search_paths

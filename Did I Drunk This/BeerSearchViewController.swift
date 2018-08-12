@@ -7,8 +7,10 @@
 //
 
 import UIKit
-
 import os.log
+
+import KeychainAccess
+import OnboardKit
 
 class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITableViewDataSource, UITableViewDelegate {
     
@@ -21,6 +23,7 @@ class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITab
     ]
     var filteredBeers = [Beer]()
     
+    let keychain = Keychain(service: "com.pettazz.did-i-drunk-this")
     let searchController = UISearchController(searchResultsController: nil)
     
     //MARK: - UIViewController
@@ -33,9 +36,60 @@ class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITab
         searchController.searchBar.placeholder = "Search Beers"
         navigationItem.searchController = searchController
         definesPresentationContext = true
+        
+        _ = getUntappdToken()
     }
     
     // MARK: - Private methods
+    
+    private func getUntappdToken() -> String {
+        var token = String()
+        
+        if let storedToken = try? keychain.get("untappd-token"){
+            if(storedToken == nil){
+                attemptOnboarding()
+            }else{
+                token = storedToken!
+            }
+        }else{
+            fatalError("Unable to retrieve untappd-token from Keychain")
+        }
+        
+        return token
+    }
+    
+    private func attemptOnboarding(){
+        let page = OnboardPage(title: "You gotta log in tho",
+                               imageName: "onboard",
+                               description: "Promise not to steal your Untappd identity.",
+                               advanceButtonTitle: "Cancel",
+                               actionButtonTitle: "Log in with Untappd",
+                               action: {
+                                [weak self] completion in
+                                self?.loginWithUntappd(completion)
+        })
+        let appearance = OnboardViewController.AppearanceConfiguration(tintColor: .white,
+                                                                       textColor: .black,
+                                                                       backgroundColor: .orange,
+                                                                       titleFont: UIFont.boldSystemFont(ofSize: 24),
+                                                                       textFont: UIFont.boldSystemFont(ofSize: 18))
+        let onboardingViewController = OnboardViewController(pageItems: [page], appearanceConfiguration: appearance)
+        onboardingViewController.presentFrom(self, animated: true)
+    }
+    
+    private func loginWithUntappd(_ completion: @escaping (_ success: Bool, _ error: Error?) -> Void) {
+        let alert = UIAlertController(title: "Login?",
+                                      message: "hello this is definitely a real login for sure",
+                                      preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Yes", style: .default) { _ in
+            completion(true, nil)
+            self.presentedViewController?.dismiss(animated: true)
+        })
+        alert.addAction(UIAlertAction(title: "No", style: .cancel) { _ in
+            completion(false, nil)
+        })
+        presentedViewController?.present(alert, animated: true)
+    }
     
     func searchBarIsEmpty() -> Bool {
         // Returns true if the text is empty or nil
