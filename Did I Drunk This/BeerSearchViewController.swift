@@ -35,7 +35,7 @@ class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITab
         responseType:   "token"
     )
     
-    lazy var debouncedFilterContentForSearchText: (String, String) -> () = debounce(delay: 1, action: self.filterContentForSearchText)
+    lazy var debouncedFilterContentForSearchText: (String) -> () = debounce(delay: 1, action: self.filterContentForSearchText)
     
     //MARK: - UIViewController
     
@@ -45,7 +45,6 @@ class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITab
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.placeholder = "Search Beers"
-        searchController.searchBar.scopeButtonTitles = ["All", "Beer Name", "Brewery"]
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.searchController = searchController
         definesPresentationContext = true
@@ -126,7 +125,7 @@ class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITab
         return searchController.isActive && !searchBarIsEmptyOrTooSmall()
     }
     
-    func filterContentForSearchText(_ searchText: String, scope: String = "All") {
+    func filterContentForSearchText(_ searchText: String) {
         Alamofire.request(urlMachine.get(endpointName: "BeerSearch", params: searchText)).responseSwiftyJSON { response in
             //os_log("Request: %@", type: .debug, String(describing: response.request))
             //os_log("Response: %@", type: .debug, String(describing: response))
@@ -190,8 +189,6 @@ class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITab
             return
         }
         
-        guard let scopeString = self.searchController.searchBar.scopeButtonTitles?[self.searchController.searchBar.selectedScopeButtonIndex] else { return }
-        
-        self.debouncedFilterContentForSearchText(self.searchController.searchBar.text!, scopeString)
+        self.debouncedFilterContentForSearchText(self.searchController.searchBar.text!)
     }
 }
