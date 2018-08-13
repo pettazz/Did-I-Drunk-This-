@@ -6,9 +6,10 @@ target 'Did I Drunk This' do
   use_frameworks!
 
   # Pods for Did I Drunk This
-  pod 'OAuthSwift', '~> 1.2.0'
   pod 'Alamofire', '~> 4.7'
+  pod 'Alamofire-SwiftyJSON'
   pod 'KeychainAccess'
+  pod 'OAuthSwift', '~> 1.2.0'
   pod 'OnboardKit'
 
   target 'Did I Drunk ThisTests' do
