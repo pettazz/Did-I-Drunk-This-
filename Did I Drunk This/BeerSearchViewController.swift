@@ -9,23 +9,33 @@
 import UIKit
 import os.log
 
+import Alamofire
+import Alamofire_SwiftyJSON
 import KeychainAccess
 import OAuthSwift
 import OnboardKit
+import SwiftyJSON
 
 class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITableViewDataSource, UITableViewDelegate {
     
     //MARK: - Properties
     @IBOutlet var tableView: UITableView!
     
-    var beers = [
-        Beer(name: "Sculpin IPA", brewery: "Ballast Point", image: nil, drunk: true),
-        Beer(name: "Sam Adams Boston Lager", brewery: "Boston Beer Co", image: nil, drunk: true)
-    ]
+    var beers = [Beer]()
     var filteredBeers = [Beer]()
     
     let keychain = Keychain(service: "com.pettazz.did-i-drunk-this")
     let searchController = UISearchController(searchResultsController: nil)
+    let urlMachine = UntappdUrlConstructor()
+    
+    var oauthswift = OAuth2Swift(
+        consumerKey:    K.Untappd.ClientID,
+        consumerSecret: K.Untappd.ClientSecret,
+        authorizeUrl:   K.Untappd.Endpoint["Authenticate"]!,
+        responseType:   "token"
+    )
+    
+    lazy var debouncedFilterContentForSearchText: (String, String) -> () = debounce(delay: 1, action: self.filterContentForSearchText)
     
     //MARK: - UIViewController
     
@@ -35,11 +45,16 @@ class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITab
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.placeholder = "Search Beers"
+        searchController.searchBar.scopeButtonTitles = ["All", "Beer Name", "Brewery"]
+        navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.searchController = searchController
         definesPresentationContext = true
         
         // if this is the first time opening the app, trigger the onboard/login
-        _ = getUntappdToken()
+        let token = getUntappdToken()
+        if(token != ""){
+            urlMachine.setToken(token: token)
+        }
     }
     
     // MARK: - Private methods
@@ -83,21 +98,17 @@ class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITab
     }
     
     private func loginWithUntappd(_ completion: @escaping (_ success: Bool, _ error: Error?) -> Void) {
-        // create an instance and retain it
-        let oauthswift = OAuth2Swift(
-            consumerKey:    K.Untappd.ClientID,
-            consumerSecret: K.Untappd.ClientSecret,
-            authorizeUrl:   K.Untappd.Endpoint.authenticate,
-            responseType:   "token"
-        )
-        oauthswift.authorizeURLHandler = SafariURLHandler(viewController: self.presentedViewController! , oauthSwift: oauthswift)
+        self.oauthswift.authorizeURLHandler = SafariURLHandler(
+            viewController: self.presentedViewController!,
+            oauthSwift: self.oauthswift)
         
-        let _ = oauthswift.authorize(
+        let _ = self.oauthswift.authorize(
             withCallbackURL: URL(string: "dididrunkthis://oauth-callback/untappd")!,
             scope: "",
             state:"DIDIDRUNKTHIS",
             success: { credential, response, parameters in
                 self.keychain[string: "untappd-token"] = credential.oauthToken
+                self.urlMachine.setToken(token: credential.oauthToken)
                 self.presentedViewController!.dismiss(animated: true)
             },
                 failure: { error in
@@ -106,22 +117,37 @@ class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITab
         )
     }
     
-    func searchBarIsEmpty() -> Bool {
-        // Returns true if the text is empty or nil
-        return searchController.searchBar.text?.isEmpty ?? true
+    func searchBarIsEmptyOrTooSmall() -> Bool {
+        return searchController.searchBar.text?.isEmpty ?? true ||
+               searchController.searchBar.text?.count ?? 0 < 3
     }
     
     func isFiltering() -> Bool {
-        return searchController.isActive && !searchBarIsEmpty()
+        return searchController.isActive && !searchBarIsEmptyOrTooSmall()
     }
     
     func filterContentForSearchText(_ searchText: String, scope: String = "All") {
-        filteredBeers = beers.filter({( beer : Beer) -> Bool in
-            return beer.name.lowercased().contains(searchText.lowercased()) ||
-                beer.brewery.lowercased().contains(searchText.lowercased())
-        })
-        
-        tableView.reloadData()
+        Alamofire.request(urlMachine.get(endpointName: "BeerSearch", params: searchText)).responseSwiftyJSON { response in
+            //os_log("Request: %@", type: .debug, String(describing: response.request))
+            //os_log("Response: %@", type: .debug, String(describing: response))
+            
+            if let json = response.value {
+                let responseBeers = json["response"]["beers"]["items"]
+                os_log("got %u beers", type: .debug, responseBeers.count)
+                for(_, subJson):(String, JSON) in responseBeers{
+                    let newBeer = Beer(
+                        name: subJson["beer"]["beer_name"].stringValue,
+                        brewery: subJson["brewery"]["brewery_name"].stringValue,
+                        image: nil,
+                        drunk: subJson["have_had"].boolValue
+                    )
+                    self.filteredBeers.append(newBeer)
+                    //os_log("added %@", type: .debug, newBeer.name)
+                }
+                
+                self.tableView.reloadData()
+            }
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -153,13 +179,19 @@ class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITab
         return cell
     }
     
-    //MARK: - UISearchBarDelegate
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String){
-        print(searchText)
-    }
-    
     // MARK: - UISearchResultsUpdating Delegate
     func updateSearchResults(for searchController: UISearchController) {
-        filterContentForSearchText(searchController.searchBar.text!)
+        self.filteredBeers = [Beer]()
+        //TODO: show a loading indicator somehow
+        self.tableView.reloadData()
+        
+        if(searchBarIsEmptyOrTooSmall()){
+            tableView.reloadData()
+            return
+        }
+        
+        guard let scopeString = self.searchController.searchBar.scopeButtonTitles?[self.searchController.searchBar.selectedScopeButtonIndex] else { return }
+        
+        self.debouncedFilterContentForSearchText(self.searchController.searchBar.text!, scopeString)
     }
 }

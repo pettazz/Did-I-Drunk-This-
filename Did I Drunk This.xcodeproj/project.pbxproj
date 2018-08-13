@@ -16,8 +16,11 @@
 		F02F3E8B2117EB9600E0D336 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F02F3E892117EB9600E0D336 /* LaunchScreen.storyboard */; };
 		F02F3E962117EB9600E0D336 /* Did_I_Drunk_ThisTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02F3E952117EB9600E0D336 /* Did_I_Drunk_ThisTests.swift */; };
 		F02F3EAB211A644C00E0D336 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = F02F3EAA211A644C00E0D336 /* Podfile */; };
+		F0543F3D2120B9D90029BF75 /* UntappdUrlConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0543F3C2120B9D90029BF75 /* UntappdUrlConstructor.swift */; };
 		F0BCC692211D418200D4E39D /* Beer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0BCC691211D418100D4E39D /* Beer.swift */; };
 		F0BCC694211F75E100D4E39D /* BeerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0BCC693211F75E100D4E39D /* BeerTableViewCell.swift */; };
+		F0DBAA68211FF2D4005805C5 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0DBAA67211FF2D4005805C5 /* Constants.swift */; };
+		F0DBAA6A2120A2A1005805C5 /* Debouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0DBAA692120A2A1005805C5 /* Debouncer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,8 +51,11 @@
 		F02F3E952117EB9600E0D336 /* Did_I_Drunk_ThisTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Did_I_Drunk_ThisTests.swift; sourceTree = "<group>"; };
 		F02F3E972117EB9600E0D336 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F02F3EAA211A644C00E0D336 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		F0543F3C2120B9D90029BF75 /* UntappdUrlConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UntappdUrlConstructor.swift; sourceTree = "<group>"; };
 		F0BCC691211D418100D4E39D /* Beer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Beer.swift; sourceTree = "<group>"; };
 		F0BCC693211F75E100D4E39D /* BeerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeerTableViewCell.swift; sourceTree = "<group>"; };
+		F0DBAA67211FF2D4005805C5 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		F0DBAA692120A2A1005805C5 /* Debouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debouncer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,8 +123,11 @@
 			children = (
 				F02F3EAA211A644C00E0D336 /* Podfile */,
 				F02F3E802117EB9500E0D336 /* AppDelegate.swift */,
+				F0DBAA67211FF2D4005805C5 /* Constants.swift */,
 				F0BCC691211D418100D4E39D /* Beer.swift */,
 				F02F3E822117EB9500E0D336 /* BeerSearchViewController.swift */,
+				F0543F3C2120B9D90029BF75 /* UntappdUrlConstructor.swift */,
+				F0DBAA692120A2A1005805C5 /* Debouncer.swift */,
 				F0BCC693211F75E100D4E39D /* BeerTableViewCell.swift */,
 				F02F3E842117EB9500E0D336 /* Main.storyboard */,
 				F02F3E872117EB9600E0D336 /* Assets.xcassets */,
@@ -246,16 +255,20 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Did I Drunk This/Pods-Did I Drunk This-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/Alamofire-SwiftyJSON/Alamofire_SwiftyJSON.framework",
 				"${BUILT_PRODUCTS_DIR}/KeychainAccess/KeychainAccess.framework",
 				"${BUILT_PRODUCTS_DIR}/OAuthSwift/OAuthSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/OnboardKit/OnboardKit.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire_SwiftyJSON.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KeychainAccess.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OAuthSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OnboardKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -305,10 +318,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F0DBAA68211FF2D4005805C5 /* Constants.swift in Sources */,
 				F02F3E832117EB9500E0D336 /* BeerSearchViewController.swift in Sources */,
 				F0BCC692211D418200D4E39D /* Beer.swift in Sources */,
 				F02F3E812117EB9500E0D336 /* AppDelegate.swift in Sources */,
 				F0BCC694211F75E100D4E39D /* BeerTableViewCell.swift in Sources */,
+				F0543F3D2120B9D90029BF75 /* UntappdUrlConstructor.swift in Sources */,
+				F0DBAA6A2120A2A1005805C5 /* Debouncer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

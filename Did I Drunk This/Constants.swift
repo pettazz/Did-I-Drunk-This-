@@ -15,8 +15,10 @@ struct K{
         static let ClientID = "no"
         static let ClientSecret = "lol"
         
-        struct Endpoint{
-            static let authenticate = "https://untappd.com/oauth/authenticate/"
-        }
+        static let Endpoint: [String:String] = [
+            "Authenticate": "https://untappd.com/oauth/authenticate/",
+            
+            "BeerSearch": "\(K.Untappd.BaseUrl)search/beer?q=%@"
+        ]
     }
 }
