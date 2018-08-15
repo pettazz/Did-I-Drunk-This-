@@ -10,6 +10,7 @@ import UIKit
 import os.log
 
 import Alamofire
+import AlamofireImage
 import Alamofire_SwiftyJSON
 import KeychainAccess
 import OAuthSwift
@@ -21,8 +22,7 @@ class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITab
     //MARK: - Properties
     @IBOutlet var tableView: UITableView!
     
-    var beers = [Beer]()
-    var filteredBeers = [Beer]()
+    var foundBeers = [Beer]()
     
     let keychain = Keychain(service: "com.pettazz.did-i-drunk-this")
     let searchController = UISearchController(searchResultsController: nil)
@@ -35,7 +35,7 @@ class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITab
         responseType:   "token"
     )
     
-    lazy var debouncedFilterContentForSearchText: (String) -> () = debounce(delay: 1, action: self.filterContentForSearchText)
+    lazy var debouncedPerformSearch: (String) -> () = debounce(delay: 1, action: self.performSearch)
     
     //MARK: - UIViewController
     
@@ -44,17 +44,20 @@ class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITab
         
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.placeholder = "Search Beers"
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.searchController = searchController
-        definesPresentationContext = true
+        searchController.searchBar.placeholder = "Beer or Brewery Name"
+        searchController.searchBar.searchBarStyle = .prominent
+        searchController.searchBar.barStyle = .black
+        tableView.tableHeaderView = searchController.searchBar
+//        tableView.backgroundColor = UIColor(red:0.00, green:0.30, blue:0.47, alpha:1.0)
+//        tableView.tableHeaderView?.backgroundColor = UIColor.darkGray
         
         // if this is the first time opening the app, trigger the onboard/login
         let token = getUntappdToken()
         if(token != ""){
             urlMachine.setToken(token: token)
         }
-    }
+    }   
+    
     
     // MARK: - Private methods
     
@@ -121,11 +124,17 @@ class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITab
                searchController.searchBar.text?.count ?? 0 < 3
     }
     
-    func isFiltering() -> Bool {
-        return searchController.isActive && !searchBarIsEmptyOrTooSmall()
-    }
-    
-    func filterContentForSearchText(_ searchText: String) {
+    func performSearch(_ searchText: String) {
+        // loading spinner
+        if(searchController.isActive){
+            let indicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+            indicator.tag = 101
+            indicator.center = self.tableView.convert(self.tableView.center, from:self.tableView.superview)
+        
+            self.tableView.addSubview(indicator)
+            indicator.startAnimating()
+        }
+
         Alamofire.request(urlMachine.get(endpointName: "BeerSearch", params: searchText)).responseSwiftyJSON { response in
             //os_log("Request: %@", type: .debug, String(describing: response.request))
             //os_log("Response: %@", type: .debug, String(describing: response))
@@ -137,12 +146,15 @@ class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITab
                     let newBeer = Beer(
                         name: subJson["beer"]["beer_name"].stringValue,
                         brewery: subJson["brewery"]["brewery_name"].stringValue,
-                        image: nil,
+                        image: subJson["beer"]["beer_label"].stringValue,
                         drunk: subJson["have_had"].boolValue
                     )
-                    self.filteredBeers.append(newBeer)
+                    self.foundBeers.append(newBeer)
                     //os_log("added %@", type: .debug, newBeer.name)
                 }
+                
+                //TODO: bleh this is terrible
+                self.tableView.viewWithTag(101)?.removeFromSuperview()
                 
                 self.tableView.reloadData()
             }
@@ -155,40 +167,35 @@ class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITab
     
     //MARK: - UITableViewDelegate
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if isFiltering() {
-            return filteredBeers.count
-        }
-        
-        return beers.count
+        return foundBeers.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "beerCell", for: indexPath) as! BeerTableViewCell
         let beer: Beer
         
-        if isFiltering() {
-            beer = filteredBeers[indexPath.row]
-        } else {
-            beer = beers[indexPath.row]
-        }
+        beer = foundBeers[indexPath.row]
         
         cell.nameLabel!.text = beer.name
         cell.breweryLabel!.text = beer.brewery
+        cell.labelImage.af_setImage(
+            withURL: URL(string: beer.image)!,
+            placeholderImage: UIImage(named: "beerPlaceholder")!)
+        cell.drunkLabel.isHidden = !beer.drunk
+        //cell.drunkLabel.text = "✅"
         
         return cell
     }
     
     // MARK: - UISearchResultsUpdating Delegate
     func updateSearchResults(for searchController: UISearchController) {
-        self.filteredBeers = [Beer]()
-        //TODO: show a loading indicator somehow
+        self.foundBeers = [Beer]()
         self.tableView.reloadData()
         
         if(searchBarIsEmptyOrTooSmall()){
-            tableView.reloadData()
             return
         }
         
-        self.debouncedFilterContentForSearchText(self.searchController.searchBar.text!)
+        self.debouncedPerformSearch(searchController.searchBar.text!)
     }
 }

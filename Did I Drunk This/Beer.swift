@@ -9,9 +9,22 @@
 import Foundation
 import UIKit
 
-struct Beer {
-    let name : String
-    let brewery : String
-    let image : UIImage?
-    let drunk : Bool
+class Beer: NSObject{
+    
+    //MARK: Properties
+    var name: String
+    var brewery: String
+    var image: String
+    var drunk: Bool = false
+
+    //MARK: Initialization
+    init(name: String, brewery: String, image: String, drunk: Bool) {
+        self.name = name
+        self.brewery = brewery
+        self.image = image
+        self.drunk = drunk
+    }
+    
+    
+    
 }

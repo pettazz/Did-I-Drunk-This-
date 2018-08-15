@@ -7,6 +7,7 @@ target 'Did I Drunk This' do
 
   # Pods for Did I Drunk This
   pod 'Alamofire', '~> 4.7'
+  pod 'AlamofireImage'
   pod 'Alamofire-SwiftyJSON'
   pod 'KeychainAccess'
   pod 'OAuthSwift', '~> 1.2.0'
