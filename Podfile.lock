@@ -12,11 +12,12 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 4.7)
-  - Alamofire-SwiftyJSON
+  - Alamofire-SwiftyJSON (~> 3.0.0)
   - AlamofireImage
   - KeychainAccess
   - OAuthSwift (~> 1.2.0)
   - OnboardKit
+  - SwiftyJSON (~> 4.0)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -37,6 +38,6 @@ SPEC CHECKSUMS:
   OnboardKit: 6828f2a4cd8a0f5451f7ebcaa308f84a29df3d1e
   SwiftyJSON: 070dabdcb1beb81b247c65ffa3a79dbbfb3b48aa
 
-PODFILE CHECKSUM: 1a61a548b29fef38f212b1d410e622f0939e692e
+PODFILE CHECKSUM: 55c30a7c04c5e93d5b0a47d418625bd75dd6bcff
 
 COCOAPODS: 1.5.3

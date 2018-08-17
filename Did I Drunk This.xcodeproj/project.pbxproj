@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		05CCA7EB663E241B646DE446 /* Pods_Did_I_Drunk_This.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1C8FAFFD75E567C3F1FDD1F /* Pods_Did_I_Drunk_This.framework */; };
 		50743BAF601AB99FBC9736F5 /* Pods_Did_I_Drunk_ThisTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8468E9084F8DC85529ADD511 /* Pods_Did_I_Drunk_ThisTests.framework */; };
+		F0289BBA2123D2F8004133BE /* BeerDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0289BB92123D2F8004133BE /* BeerDetailViewController.swift */; };
 		F02F3E812117EB9500E0D336 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02F3E802117EB9500E0D336 /* AppDelegate.swift */; };
 		F02F3E832117EB9500E0D336 /* BeerSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02F3E822117EB9500E0D336 /* BeerSearchViewController.swift */; };
 		F02F3E862117EB9500E0D336 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F02F3E842117EB9500E0D336 /* Main.storyboard */; };
@@ -16,7 +17,7 @@
 		F02F3E8B2117EB9600E0D336 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F02F3E892117EB9600E0D336 /* LaunchScreen.storyboard */; };
 		F02F3E962117EB9600E0D336 /* Did_I_Drunk_ThisTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02F3E952117EB9600E0D336 /* Did_I_Drunk_ThisTests.swift */; };
 		F02F3EAB211A644C00E0D336 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = F02F3EAA211A644C00E0D336 /* Podfile */; };
-		F0543F3D2120B9D90029BF75 /* UntappdUrlConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0543F3C2120B9D90029BF75 /* UntappdUrlConstructor.swift */; };
+		F06449B22125169F00ED23D4 /* UntappdService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F06449B12125169F00ED23D4 /* UntappdService.swift */; };
 		F0BCC692211D418200D4E39D /* Beer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0BCC691211D418100D4E39D /* Beer.swift */; };
 		F0BCC694211F75E100D4E39D /* BeerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0BCC693211F75E100D4E39D /* BeerTableViewCell.swift */; };
 		F0DBAA68211FF2D4005805C5 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0DBAA67211FF2D4005805C5 /* Constants.swift */; };
@@ -40,6 +41,7 @@
 		C1C8FAFFD75E567C3F1FDD1F /* Pods_Did_I_Drunk_This.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Did_I_Drunk_This.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CBF5BAF4921918C149AB2ADB /* Pods-Did I Drunk ThisTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Did I Drunk ThisTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Did I Drunk ThisTests/Pods-Did I Drunk ThisTests.release.xcconfig"; sourceTree = "<group>"; };
 		E840E5F042B39B36AB97EFE1 /* Pods-Did I Drunk This.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Did I Drunk This.release.xcconfig"; path = "Pods/Target Support Files/Pods-Did I Drunk This/Pods-Did I Drunk This.release.xcconfig"; sourceTree = "<group>"; };
+		F0289BB92123D2F8004133BE /* BeerDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeerDetailViewController.swift; sourceTree = "<group>"; };
 		F02F3E7D2117EB9500E0D336 /* Did I Drunk This.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Did I Drunk This.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F02F3E802117EB9500E0D336 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F02F3E822117EB9500E0D336 /* BeerSearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeerSearchViewController.swift; sourceTree = "<group>"; };
@@ -51,7 +53,7 @@
 		F02F3E952117EB9600E0D336 /* Did_I_Drunk_ThisTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Did_I_Drunk_ThisTests.swift; sourceTree = "<group>"; };
 		F02F3E972117EB9600E0D336 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F02F3EAA211A644C00E0D336 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		F0543F3C2120B9D90029BF75 /* UntappdUrlConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UntappdUrlConstructor.swift; sourceTree = "<group>"; };
+		F06449B12125169F00ED23D4 /* UntappdService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UntappdService.swift; sourceTree = "<group>"; };
 		F0BCC691211D418100D4E39D /* Beer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Beer.swift; sourceTree = "<group>"; };
 		F0BCC693211F75E100D4E39D /* BeerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeerTableViewCell.swift; sourceTree = "<group>"; };
 		F0DBAA67211FF2D4005805C5 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -124,11 +126,12 @@
 				F02F3EAA211A644C00E0D336 /* Podfile */,
 				F02F3E802117EB9500E0D336 /* AppDelegate.swift */,
 				F0DBAA67211FF2D4005805C5 /* Constants.swift */,
-				F0BCC691211D418100D4E39D /* Beer.swift */,
-				F02F3E822117EB9500E0D336 /* BeerSearchViewController.swift */,
-				F0543F3C2120B9D90029BF75 /* UntappdUrlConstructor.swift */,
 				F0DBAA692120A2A1005805C5 /* Debouncer.swift */,
+				F0BCC691211D418100D4E39D /* Beer.swift */,
 				F0BCC693211F75E100D4E39D /* BeerTableViewCell.swift */,
+				F06449B12125169F00ED23D4 /* UntappdService.swift */,
+				F0289BB92123D2F8004133BE /* BeerDetailViewController.swift */,
+				F02F3E822117EB9500E0D336 /* BeerSearchViewController.swift */,
 				F02F3E842117EB9500E0D336 /* Main.storyboard */,
 				F02F3E872117EB9600E0D336 /* Assets.xcassets */,
 				F02F3E892117EB9600E0D336 /* LaunchScreen.storyboard */,
@@ -321,11 +324,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				F0DBAA68211FF2D4005805C5 /* Constants.swift in Sources */,
+				F0289BBA2123D2F8004133BE /* BeerDetailViewController.swift in Sources */,
 				F02F3E832117EB9500E0D336 /* BeerSearchViewController.swift in Sources */,
 				F0BCC692211D418200D4E39D /* Beer.swift in Sources */,
+				F06449B22125169F00ED23D4 /* UntappdService.swift in Sources */,
 				F02F3E812117EB9500E0D336 /* AppDelegate.swift in Sources */,
 				F0BCC694211F75E100D4E39D /* BeerTableViewCell.swift in Sources */,
-				F0543F3D2120B9D90029BF75 /* UntappdUrlConstructor.swift in Sources */,
 				F0DBAA6A2120A2A1005805C5 /* Debouncer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

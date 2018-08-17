@@ -12,13 +12,15 @@ import UIKit
 class Beer: NSObject{
     
     //MARK: Properties
+    var id: Int
     var name: String
     var brewery: String
     var image: String
     var drunk: Bool = false
 
     //MARK: Initialization
-    init(name: String, brewery: String, image: String, drunk: Bool) {
+    init(id: Int, name: String, brewery: String, image: String, drunk: Bool) {
+        self.id = id
         self.name = name
         self.brewery = brewery
         self.image = image
