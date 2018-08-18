@@ -52,6 +52,8 @@ class BeerDetailViewController: UIViewController {
                     beerData["beer_label_hd"].stringValue
                 self.beer!.drunk = beerData["auth_rating"].intValue > 0
                 
+                print(beerData["checkins"])
+                
                 self.updateBeerView()
             },
             onError: {error in

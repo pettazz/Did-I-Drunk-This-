@@ -62,7 +62,9 @@ class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITab
         untappdMachine.beerSearch(
             searchText: searchText,
             onSuccess: {json in
+                var newBeerList = [Beer]()
                 let responseBeers = json["response"]["beers"]["items"]
+                
                 os_log("got %u beers", type: .debug, responseBeers.count)
                 for(_, subJson):(String, JSON) in responseBeers{
                     let newBeer = Beer(
@@ -72,8 +74,9 @@ class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITab
                         image: subJson["beer"]["beer_label"].stringValue,
                         drunk: subJson["have_had"].boolValue
                     )
-                    self.foundBeers.append(newBeer)
+                    newBeerList.append(newBeer)
                 }
+                self.foundBeers = newBeerList
                 
                 //TODO: bleh this is terrible
                 self.tableView.viewWithTag(101)?.removeFromSuperview()
@@ -115,10 +118,9 @@ class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITab
     
     // MARK: - UISearchResultsUpdating Delegate
     func updateSearchResults(for searchController: UISearchController) {
-        self.foundBeers = [Beer]()
-        self.tableView.reloadData()
-        
         if(searchContentIsEmptyOrTooSmall()){
+            self.foundBeers = [Beer]()
+            self.tableView.reloadData()
             return
         }
         
