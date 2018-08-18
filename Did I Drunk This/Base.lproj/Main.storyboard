@@ -49,13 +49,15 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <imageView userInteractionEnabled="NO" alpha="0.84999999999999998" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="ratingBackground" translatesAutoresizingMaskIntoConstraints="NO" id="Yxd-GF-07M">
+                                                <imageView userInteractionEnabled="NO" alpha="0.84999999999999998" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ratingBackground" translatesAutoresizingMaskIntoConstraints="NO" id="Yxd-GF-07M">
                                                     <rect key="frame" x="45" y="6" width="40" height="40"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="40" id="Ae3-3x-WP8"/>
+                                                        <constraint firstAttribute="width" constant="40" id="bhF-VQ-oRi"/>
+                                                    </constraints>
                                                 </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="6.9" textAlignment="center" lineBreakMode="clip" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4Am-DY-ipN">
-                                                    <rect key="frame" x="45" y="16" width="40" height="21"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="6.9" textAlignment="center" lineBreakMode="clip" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4Am-DY-ipN">
+                                                    <rect key="frame" x="51" y="15.666666666666664" width="28" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="17"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
@@ -65,10 +67,14 @@
                                                 <constraint firstAttribute="trailingMargin" secondItem="l3u-vC-Dcq" secondAttribute="trailing" id="2p5-yE-U0l"/>
                                                 <constraint firstItem="l3u-vC-Dcq" firstAttribute="leading" secondItem="IRC-h1-Ntn" secondAttribute="trailing" constant="8" id="5UZ-JF-y1R"/>
                                                 <constraint firstItem="l3u-vC-Dcq" firstAttribute="top" secondItem="xyM-WX-deW" secondAttribute="bottom" id="8Gf-t0-hOQ"/>
+                                                <constraint firstItem="4Am-DY-ipN" firstAttribute="centerX" secondItem="Yxd-GF-07M" secondAttribute="centerX" id="CKq-IF-47e"/>
                                                 <constraint firstItem="xyM-WX-deW" firstAttribute="top" secondItem="YxG-3T-Y7a" secondAttribute="topMargin" id="KBT-fH-uIH"/>
+                                                <constraint firstItem="Yxd-GF-07M" firstAttribute="trailing" secondItem="IRC-h1-Ntn" secondAttribute="trailing" id="P7G-KA-dkP"/>
                                                 <constraint firstItem="xyM-WX-deW" firstAttribute="trailing" secondItem="YxG-3T-Y7a" secondAttribute="trailingMargin" id="PeT-KT-hwK"/>
                                                 <constraint firstItem="IRC-h1-Ntn" firstAttribute="top" secondItem="YxG-3T-Y7a" secondAttribute="top" constant="6" id="PkK-RB-GfR"/>
                                                 <constraint firstItem="IRC-h1-Ntn" firstAttribute="leading" secondItem="YxG-3T-Y7a" secondAttribute="leadingMargin" id="SJ1-mT-fxj"/>
+                                                <constraint firstItem="4Am-DY-ipN" firstAttribute="centerY" secondItem="Yxd-GF-07M" secondAttribute="centerY" id="XSX-2C-fjd"/>
+                                                <constraint firstItem="Yxd-GF-07M" firstAttribute="top" secondItem="IRC-h1-Ntn" secondAttribute="top" id="lRQ-hw-Jp9"/>
                                                 <constraint firstItem="xyM-WX-deW" firstAttribute="leading" secondItem="IRC-h1-Ntn" secondAttribute="trailing" constant="8" id="wwM-c7-lTZ"/>
                                             </constraints>
                                         </tableViewCellContentView>
