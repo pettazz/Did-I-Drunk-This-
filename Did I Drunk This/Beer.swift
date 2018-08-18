@@ -17,14 +17,18 @@ class Beer: NSObject{
     var brewery: String
     var image: String
     var drunk: Bool = false
+    var meRating: Float
+    var everyoneRating: Float? = nil
 
     //MARK: Initialization
-    init(id: Int, name: String, brewery: String, image: String, drunk: Bool) {
+    init(id: Int, name: String, brewery: String, image: String, drunk: Bool, meRating: Float, everyoneRating: Float? = nil) {
         self.id = id
         self.name = name
         self.brewery = brewery
         self.image = image
         self.drunk = drunk
+        self.meRating = meRating
+        self.everyoneRating = everyoneRating
     }
     
     

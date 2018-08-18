@@ -49,22 +49,23 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" alpha="0.75" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="✓" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WQC-va-Qz3">
-                                                    <rect key="frame" x="29.000000000000004" y="11" width="43.333333333333343" height="61"/>
-                                                    <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="50"/>
-                                                    <color key="textColor" red="0.29457594389562303" green="1" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                                <imageView userInteractionEnabled="NO" alpha="0.84999999999999998" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="ratingBackground" translatesAutoresizingMaskIntoConstraints="NO" id="Yxd-GF-07M">
+                                                    <rect key="frame" x="45" y="6" width="40" height="40"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                </imageView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="6.9" textAlignment="center" lineBreakMode="clip" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4Am-DY-ipN">
+                                                    <rect key="frame" x="45" y="16" width="40" height="21"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="17"/>
+                                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
-                                                    <color key="shadowColor" cocoaTouchSystemColor="darkTextColor"/>
-                                                    <size key="shadowOffset" width="1" height="1"/>
                                                 </label>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstAttribute="trailingMargin" secondItem="l3u-vC-Dcq" secondAttribute="trailing" id="2p5-yE-U0l"/>
                                                 <constraint firstItem="l3u-vC-Dcq" firstAttribute="leading" secondItem="IRC-h1-Ntn" secondAttribute="trailing" constant="8" id="5UZ-JF-y1R"/>
                                                 <constraint firstItem="l3u-vC-Dcq" firstAttribute="top" secondItem="xyM-WX-deW" secondAttribute="bottom" id="8Gf-t0-hOQ"/>
-                                                <constraint firstItem="WQC-va-Qz3" firstAttribute="centerX" secondItem="IRC-h1-Ntn" secondAttribute="centerX" id="Ho6-DP-pyN"/>
                                                 <constraint firstItem="xyM-WX-deW" firstAttribute="top" secondItem="YxG-3T-Y7a" secondAttribute="topMargin" id="KBT-fH-uIH"/>
-                                                <constraint firstItem="WQC-va-Qz3" firstAttribute="centerY" secondItem="IRC-h1-Ntn" secondAttribute="centerY" id="N4u-YX-ljr"/>
                                                 <constraint firstItem="xyM-WX-deW" firstAttribute="trailing" secondItem="YxG-3T-Y7a" secondAttribute="trailingMargin" id="PeT-KT-hwK"/>
                                                 <constraint firstItem="IRC-h1-Ntn" firstAttribute="top" secondItem="YxG-3T-Y7a" secondAttribute="top" constant="6" id="PkK-RB-GfR"/>
                                                 <constraint firstItem="IRC-h1-Ntn" firstAttribute="leading" secondItem="YxG-3T-Y7a" secondAttribute="leadingMargin" id="SJ1-mT-fxj"/>
@@ -73,9 +74,10 @@
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="breweryLabel" destination="l3u-vC-Dcq" id="jTz-fj-SnL"/>
-                                            <outlet property="drunkLabel" destination="WQC-va-Qz3" id="ow3-Vj-4F3"/>
                                             <outlet property="labelImage" destination="IRC-h1-Ntn" id="tsY-Dv-u13"/>
                                             <outlet property="nameLabel" destination="xyM-WX-deW" id="M4s-eD-tEw"/>
+                                            <outlet property="ratingImage" destination="Yxd-GF-07M" id="9e4-1F-Gn2"/>
+                                            <outlet property="ratingLabel" destination="4Am-DY-ipN" id="dak-UZ-C9H"/>
                                             <segue destination="Vfo-zn-g6l" kind="show" id="G6R-NY-PeT"/>
                                         </connections>
                                     </tableViewCell>
@@ -179,4 +181,7 @@
             <point key="canvasLocation" x="117.59999999999999" y="-644.33497536945811"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="ratingBackground" width="40" height="40"/>
+    </resources>
 </document>

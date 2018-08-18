@@ -72,7 +72,8 @@ class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITab
                         name: subJson["beer"]["beer_name"].stringValue,
                         brewery: subJson["brewery"]["brewery_name"].stringValue,
                         image: subJson["beer"]["beer_label"].stringValue,
-                        drunk: subJson["have_had"].boolValue
+                        drunk: subJson["have_had"].boolValue,
+                        meRating: Float(round(subJson["beer"]["auth_rating"].floatValue * 10) / 10)
                     )
                     newBeerList.append(newBeer)
                 }
@@ -110,7 +111,9 @@ class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITab
         cell.labelImage.af_setImage(
             withURL: URL(string: beer.image)!,
             placeholderImage: UIImage(named: "beerPlaceholder")!)
-        cell.drunkLabel.isHidden = !beer.drunk
+        cell.ratingImage.isHidden = !beer.drunk
+        cell.ratingLabel.isHidden = !beer.drunk
+        cell.ratingLabel.text = String(beer.meRating)
         //cell.drunkLabel.text = "✅"
         
         return cell
