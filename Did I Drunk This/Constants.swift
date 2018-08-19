@@ -19,7 +19,7 @@ struct K{
             "Authenticate": "https://untappd.com/oauth/authenticate/",
             
             "BeerSearch": "\(K.Untappd.BaseUrl)search/beer?q=%@",
-            "BeerDetails": "\(K.Untappd.BaseUrl)beer/info/%@"
+            "BeerDetails": "\(K.Untappd.BaseUrl)beer/info/%@?compact=true"
         ]
     }
 }
