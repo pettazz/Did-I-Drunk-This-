@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		05CCA7EB663E241B646DE446 /* Pods_Did_I_Drunk_This.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1C8FAFFD75E567C3F1FDD1F /* Pods_Did_I_Drunk_This.framework */; };
 		50743BAF601AB99FBC9736F5 /* Pods_Did_I_Drunk_ThisTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8468E9084F8DC85529ADD511 /* Pods_Did_I_Drunk_ThisTests.framework */; };
+		F0195C302129D4AB00F0AE62 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0195C2F2129D4AB00F0AE62 /* Extensions.swift */; };
 		F0289BBA2123D2F8004133BE /* BeerDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0289BB92123D2F8004133BE /* BeerDetailViewController.swift */; };
 		F02F3E812117EB9500E0D336 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02F3E802117EB9500E0D336 /* AppDelegate.swift */; };
 		F02F3E832117EB9500E0D336 /* BeerSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02F3E822117EB9500E0D336 /* BeerSearchViewController.swift */; };
@@ -41,6 +42,7 @@
 		C1C8FAFFD75E567C3F1FDD1F /* Pods_Did_I_Drunk_This.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Did_I_Drunk_This.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CBF5BAF4921918C149AB2ADB /* Pods-Did I Drunk ThisTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Did I Drunk ThisTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Did I Drunk ThisTests/Pods-Did I Drunk ThisTests.release.xcconfig"; sourceTree = "<group>"; };
 		E840E5F042B39B36AB97EFE1 /* Pods-Did I Drunk This.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Did I Drunk This.release.xcconfig"; path = "Pods/Target Support Files/Pods-Did I Drunk This/Pods-Did I Drunk This.release.xcconfig"; sourceTree = "<group>"; };
+		F0195C2F2129D4AB00F0AE62 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		F0289BB92123D2F8004133BE /* BeerDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeerDetailViewController.swift; sourceTree = "<group>"; };
 		F02F3E7D2117EB9500E0D336 /* Did I Drunk This.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Did I Drunk This.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F02F3E802117EB9500E0D336 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -131,6 +133,7 @@
 				F0BCC693211F75E100D4E39D /* BeerTableViewCell.swift */,
 				F06449B12125169F00ED23D4 /* UntappdService.swift */,
 				F0289BB92123D2F8004133BE /* BeerDetailViewController.swift */,
+				F0195C2F2129D4AB00F0AE62 /* Extensions.swift */,
 				F02F3E822117EB9500E0D336 /* BeerSearchViewController.swift */,
 				F02F3E842117EB9500E0D336 /* Main.storyboard */,
 				F02F3E872117EB9600E0D336 /* Assets.xcassets */,
@@ -260,6 +263,7 @@
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/Alamofire-SwiftyJSON/Alamofire_SwiftyJSON.framework",
 				"${BUILT_PRODUCTS_DIR}/AlamofireImage/AlamofireImage.framework",
+				"${BUILT_PRODUCTS_DIR}/Cosmos/Cosmos.framework",
 				"${BUILT_PRODUCTS_DIR}/KeychainAccess/KeychainAccess.framework",
 				"${BUILT_PRODUCTS_DIR}/OAuthSwift/OAuthSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/OnboardKit/OnboardKit.framework",
@@ -270,6 +274,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire_SwiftyJSON.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireImage.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Cosmos.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KeychainAccess.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OAuthSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OnboardKit.framework",
@@ -324,6 +329,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F0DBAA68211FF2D4005805C5 /* Constants.swift in Sources */,
+				F0195C302129D4AB00F0AE62 /* Extensions.swift in Sources */,
 				F0289BBA2123D2F8004133BE /* BeerDetailViewController.swift in Sources */,
 				F02F3E832117EB9500E0D336 /* BeerSearchViewController.swift in Sources */,
 				F0BCC692211D418200D4E39D /* Beer.swift in Sources */,

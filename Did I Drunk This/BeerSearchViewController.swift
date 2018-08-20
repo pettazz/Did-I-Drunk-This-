@@ -114,7 +114,6 @@ class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITab
         cell.ratingImage.isHidden = !beer.drunk
         cell.ratingLabel.isHidden = !beer.drunk
         cell.ratingLabel.text = String(beer.meRating)
-        //cell.drunkLabel.text = "✅"
         
         return cell
     }

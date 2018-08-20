@@ -5,6 +5,7 @@ PODS:
     - SwiftyJSON (~> 4.0.0)
   - AlamofireImage (3.3.1):
     - Alamofire (~> 4.5)
+  - Cosmos (16.0.0)
   - KeychainAccess (3.1.1)
   - OAuthSwift (1.2.2)
   - OnboardKit (1.0.0)
@@ -14,6 +15,7 @@ DEPENDENCIES:
   - Alamofire (~> 4.7)
   - Alamofire-SwiftyJSON (~> 3.0.0)
   - AlamofireImage
+  - Cosmos (~> 16.0)
   - KeychainAccess
   - OAuthSwift (~> 1.2.0)
   - OnboardKit
@@ -24,6 +26,7 @@ SPEC REPOS:
     - Alamofire
     - Alamofire-SwiftyJSON
     - AlamofireImage
+    - Cosmos
     - KeychainAccess
     - OAuthSwift
     - OnboardKit
@@ -33,11 +36,12 @@ SPEC CHECKSUMS:
   Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
   Alamofire-SwiftyJSON: 2b3649d57dc7bb2880fb8b86f8bb969397666916
   AlamofireImage: 3b35b586853abaf94ca1250f4e94cff3c21a4c0d
+  Cosmos: 7bcee0fa858a9355a214f2a181be5dffcee42c81
   KeychainAccess: 7bd430028059754a3debab3cfc0bd1fc7fb85df3
   OAuthSwift: 27b34fe80b76b67cd8f45571e0be2432bc9f6de1
   OnboardKit: 6828f2a4cd8a0f5451f7ebcaa308f84a29df3d1e
   SwiftyJSON: 070dabdcb1beb81b247c65ffa3a79dbbfb3b48aa
 
-PODFILE CHECKSUM: 55c30a7c04c5e93d5b0a47d418625bd75dd6bcff
+PODFILE CHECKSUM: 9025917027dd635ed05bb68a7abac5c275809cad
 
 COCOAPODS: 1.5.3

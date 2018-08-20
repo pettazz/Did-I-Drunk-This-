@@ -19,16 +19,25 @@ class Beer: NSObject{
     var drunk: Bool = false
     var meRating: Float
     var everyoneRating: Float? = nil
+    var abv: Float? = nil
+    var ibu: Int? = nil
+    var style: String? = nil
+    var beerDescription: String? = nil
+    var onWishList: Bool? = nil
 
     //MARK: Initialization
-    init(id: Int, name: String, brewery: String, image: String, drunk: Bool, meRating: Float, everyoneRating: Float? = nil) {
+    init(id: Int,
+         name: String,
+         brewery: String,
+         image: String,
+         drunk: Bool,
+         meRating: Float) {
         self.id = id
         self.name = name
         self.brewery = brewery
         self.image = image
         self.drunk = drunk
         self.meRating = meRating
-        self.everyoneRating = everyoneRating
     }
     
     

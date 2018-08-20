@@ -9,6 +9,8 @@
 import UIKit
 import os.log
 
+import Cosmos
+
 class BeerDetailViewController: UIViewController {
     
     //MARK: - Properties
@@ -16,19 +18,22 @@ class BeerDetailViewController: UIViewController {
     
     var beer: Beer?
     
-    @IBOutlet weak var bid: UILabel!
     @IBOutlet weak var nameLabel: UILabel!
-    @IBOutlet weak var drunkLabel: UILabel!
     @IBOutlet weak var labelImage: UIImageView!
+    @IBOutlet weak var breweryNameLabel: UILabel!
+    @IBOutlet weak var beerStyleLabel: UILabel!
+    @IBOutlet weak var abvLabel: UILabel!
+    @IBOutlet weak var ibuLabel: UILabel!
+    @IBOutlet weak var beerDescriptionLabel: UILabel!
+    @IBOutlet weak var ratingDisplay: CosmosView!
+    
     @IBOutlet weak var spinner: UIActivityIndicatorView!
     
     //MARK: - UIViewController
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        bid.text = String(beer!.id)
-        navigationItem.title = beer!.name
-        //navigationItem.largeTitleDisplayMode = .never
+        navigationItem.largeTitleDisplayMode = .never
         
         fetchBeerDetails()
     }
@@ -47,12 +52,14 @@ class BeerDetailViewController: UIViewController {
                 let beerData = json["response"]["beer"]
                 
                 self.beer!.brewery = beerData["brewery"]["brewery_name"].stringValue
-                self.beer!.image = beerData["beer_label_hd"].stringValue.isEmpty ?
-                    beerData["beer_label"].stringValue :
-                    beerData["beer_label_hd"].stringValue
+                if(!beerData["beer_label_hd"].stringValue.isEmpty){
+                    self.beer!.image =  beerData["beer_label_hd"].stringValue
+                }
                 self.beer!.drunk = beerData["auth_rating"].intValue > 0
-                
-                print(beerData["checkins"])
+                self.beer!.style = beerData["beer_style"].stringValue
+                self.beer!.abv = beerData["beer_abv"].floatValue
+                self.beer!.ibu = beerData["beer_ibu"].intValue
+                self.beer!.beerDescription = beerData["beer_description"].stringValue
                 
                 self.updateBeerView()
             },
@@ -64,7 +71,9 @@ class BeerDetailViewController: UIViewController {
 
     private func updateBeerView(){
         nameLabel.text = beer!.name
-        drunkLabel.text = beer!.drunk ? "YEP" : "NOPE"
+        
+        labelImage.clipsToBounds = true
+        labelImage.addGradientLayer(colors: [.clear, .white])
         if(!beer!.image.isEmpty){
             labelImage.af_setImage(
                 withURL: URL(string: beer!.image)!,
@@ -72,6 +81,13 @@ class BeerDetailViewController: UIViewController {
         }else{
             labelImage.image = UIImage(named: "beerPlaceholder")
         }
+        
+        breweryNameLabel.text = beer!.brewery
+        beerStyleLabel.text = beer!.style
+        abvLabel.text = String(beer!.abv!)
+        ibuLabel.text = String(beer!.ibu!)
+        beerDescriptionLabel.text = beer!.beerDescription
+        ratingDisplay.rating = Double(beer!.meRating)
     }
     
 }
