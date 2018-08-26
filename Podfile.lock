@@ -10,6 +10,7 @@ PODS:
   - OAuthSwift (1.2.2)
   - OnboardKit (1.0.0)
   - SwiftyJSON (4.0.0)
+  - UIImageColors (2.0.1)
 
 DEPENDENCIES:
   - Alamofire (~> 4.7)
@@ -20,6 +21,7 @@ DEPENDENCIES:
   - OAuthSwift (~> 1.2.0)
   - OnboardKit
   - SwiftyJSON (~> 4.0)
+  - UIImageColors
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -31,6 +33,7 @@ SPEC REPOS:
     - OAuthSwift
     - OnboardKit
     - SwiftyJSON
+    - UIImageColors
 
 SPEC CHECKSUMS:
   Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
@@ -41,7 +44,8 @@ SPEC CHECKSUMS:
   OAuthSwift: 27b34fe80b76b67cd8f45571e0be2432bc9f6de1
   OnboardKit: 6828f2a4cd8a0f5451f7ebcaa308f84a29df3d1e
   SwiftyJSON: 070dabdcb1beb81b247c65ffa3a79dbbfb3b48aa
+  UIImageColors: c83669aff7ceb55a3b3f2c398f3b5c14632a267b
 
-PODFILE CHECKSUM: 9025917027dd635ed05bb68a7abac5c275809cad
+PODFILE CHECKSUM: db5915afd1cc47b21864e24db6c4d5e543c4b16c
 
 COCOAPODS: 1.5.3

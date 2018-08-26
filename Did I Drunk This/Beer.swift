@@ -15,7 +15,8 @@ class Beer: NSObject{
     var id: Int
     var name: String
     var brewery: String
-    var image: String
+    var image: UIImage
+    var imageURL: String
     var drunk: Bool = false
     var meRating: Float
     var everyoneRating: Float? = nil
@@ -29,13 +30,15 @@ class Beer: NSObject{
     init(id: Int,
          name: String,
          brewery: String,
-         image: String,
+         image: UIImage,
+         imageURL: String,
          drunk: Bool,
          meRating: Float) {
         self.id = id
         self.name = name
         self.brewery = brewery
         self.image = image
+        self.imageURL = imageURL
         self.drunk = drunk
         self.meRating = meRating
     }

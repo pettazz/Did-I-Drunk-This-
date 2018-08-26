@@ -131,6 +131,7 @@ class UntappdService: NSObject {
                     
             os_log("Request: %@", type: .debug , String(describing: response.request))
 //            os_log("Response: %@", type: .debug, String(describing: response))
+            os_log("Rate limit remaining: %@", type: .debug, (response.response?.allHeaderFields["X-Ratelimit-Remaining"].debugDescription)!)
             
             switch response.result{
                 case .success:

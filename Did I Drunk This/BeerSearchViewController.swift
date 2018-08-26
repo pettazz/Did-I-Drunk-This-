@@ -9,6 +9,7 @@
 import UIKit
 import os.log
 
+import Alamofire
 import AlamofireImage
 import SwiftyJSON
 
@@ -18,6 +19,7 @@ class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITab
     @IBOutlet var tableView: UITableView!
     
     var foundBeers = [Beer]()
+    var keepExistingSearch = false //skip the next update request
     
     let searchController = UISearchController(searchResultsController: nil)
     let untappdMachine = UntappdService()
@@ -30,16 +32,22 @@ class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITab
         
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.placeholder = "Beer or Brewery Name"
+        searchController.searchBar.placeholder = "Search Beer or Brewery Name"
         searchController.searchBar.searchBarStyle = .prominent
         searchController.searchBar.barStyle = .black
         tableView.tableHeaderView = searchController.searchBar
-        //tableView.backgroundColor = UIColor(red:0.00, green:0.30, blue:0.47, alpha:1.0)
-        //tableView.tableHeaderView?.backgroundColor = UIColor.darkGray
+        
         definesPresentationContext = true
         
         // if this is the first time opening the app, trigger the onboard/login
         untappdMachine.ensureTokenExists(onboardingViewController: self)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        UIApplication.shared.statusBarStyle = .lightContent
+        navigationController!.navigationBar.barTintColor = UIColor.darkGray
     }
     
     // MARK: - Private methods
@@ -71,10 +79,14 @@ class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITab
                         id: subJson["beer"]["bid"].intValue,
                         name: subJson["beer"]["beer_name"].stringValue,
                         brewery: subJson["brewery"]["brewery_name"].stringValue,
-                        image: subJson["beer"]["beer_label"].stringValue,
+                        image: UIImage(),
+                        imageURL: subJson["beer"]["beer_label"].stringValue,
                         drunk: subJson["have_had"].boolValue,
                         meRating: Float(round(subJson["beer"]["auth_rating"].floatValue * 10) / 10)
                     )
+                    Alamofire.request(newBeer.imageURL).responseImage { response in
+                        newBeer.image = response.result.value!
+                    }
                     newBeerList.append(newBeer)
                 }
                 self.foundBeers = newBeerList
@@ -109,8 +121,11 @@ class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITab
         cell.nameLabel!.text = beer.name
         cell.breweryLabel!.text = beer.brewery
         cell.labelImage.af_setImage(
-            withURL: URL(string: beer.image)!,
-            placeholderImage: UIImage(named: "beerPlaceholder")!)
+            withURL: URL(string: beer.imageURL)!,
+            placeholderImage: UIImage(named: "beerPlaceholder")!,
+            completion: { response in
+                beer.image = response.result.value!
+        })
         cell.ratingImage.isHidden = !beer.drunk
         cell.ratingLabel.isHidden = !beer.drunk
         cell.ratingLabel.text = String(beer.meRating)
@@ -118,15 +133,22 @@ class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITab
         return cell
     }
     
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 0
+    }
+    
     // MARK: - UISearchResultsUpdating Delegate
     func updateSearchResults(for searchController: UISearchController) {
-        if(searchContentIsEmptyOrTooSmall()){
-            self.foundBeers = [Beer]()
-            self.tableView.reloadData()
-            return
+        if(self.keepExistingSearch){
+            self.keepExistingSearch = false
+        }else{
+            if(searchContentIsEmptyOrTooSmall()){
+                self.foundBeers = [Beer]()
+                self.tableView.reloadData()
+            }else{
+                self.debouncedPerformSearch(searchController.searchBar.text!)
+            }
         }
-        
-        self.debouncedPerformSearch(searchController.searchBar.text!)
     }
     
     // MARK: - Navigation
@@ -147,5 +169,8 @@ class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITab
         
         let selectedBeer = foundBeers[indexPath.row]
         beerDetailController.beer = selectedBeer
+        beerDetailController.beerLabelImage = selectedBeer.image
+        
+        self.keepExistingSearch = true
     }
 }

@@ -14,6 +14,7 @@ target 'Did I Drunk This' do
   pod 'OAuthSwift', '~> 1.2.0'
   pod 'OnboardKit'
   pod 'SwiftyJSON', '~> 4.0'
+  pod 'UIImageColors'
 
   target 'Did I Drunk ThisTests' do
     inherit! :search_paths
