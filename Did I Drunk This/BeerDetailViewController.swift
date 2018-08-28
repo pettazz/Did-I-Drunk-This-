@@ -23,17 +23,25 @@ class BeerDetailViewController: UIViewController {
     var beer: Beer?
     var beerLabelImage: UIImage?
     
-    @IBOutlet weak var scrollContainerView: UIScrollView!
-    @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var labelImage: UIImageView!
+    
+    @IBOutlet weak var scrollContainerView: UIScrollView!
+    @IBOutlet weak var spinner: UIActivityIndicatorView!
+    
+    @IBOutlet weak var meRatingTitleLabel: UILabel!
+    @IBOutlet weak var everyoneRatingTitleLabel: UILabel!
+    @IBOutlet weak var abvTitleLabel: UILabel!
+    @IBOutlet weak var ibuTitleLabel: UILabel!
+    
+    @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var breweryNameLabel: UILabel!
     @IBOutlet weak var beerStyleLabel: UILabel!
     @IBOutlet weak var abvLabel: UILabel!
     @IBOutlet weak var ibuLabel: UILabel!
     @IBOutlet weak var beerDescriptionLabel: UILabel!
-    @IBOutlet weak var ratingDisplay: CosmosView!
     
-    @IBOutlet weak var spinner: UIActivityIndicatorView!
+    @IBOutlet weak var meRatingDisplay: CosmosView!
+    @IBOutlet weak var everyoneRatingDisplay: CosmosView!
     
     @IBAction func unwindSegueToBeerSearch(_ sender: Any) {
         performSegue(withIdentifier: "unwindSegueToBeerSearch", sender: self)
@@ -43,24 +51,28 @@ class BeerDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        fetchBeerDetails()
+        
         navigationItem.largeTitleDisplayMode = .never
         
         scrollContainerView.layer.borderWidth = 1
         scrollContainerView.layer.shadowOpacity = 0.9
         scrollContainerView.layer.shadowOffset = CGSize(width: 0, height: 0)
-        scrollContainerView.layer.shadowRadius = 1
+        scrollContainerView.layer.shadowRadius = 2
         scrollContainerView.layer.masksToBounds = false
-        scrollContainerView.layer.cornerRadius = 3
         
         nameLabel.text = beer!.name
         breweryNameLabel.text = beer!.brewery
-        ratingDisplay.rating = Double(beer!.meRating)
+        meRatingDisplay.rating = beer!.meRating
         labelImage.image = beer!.image
+        labelImage.layer.cornerRadius = 3
+        labelImage.layer.shadowOpacity = 0.9
+        labelImage.layer.shadowOffset = CGSize(width: 0, height: 0)
+        labelImage.layer.shadowRadius = 3
+        labelImage.layer.masksToBounds = false
         
         self.colors = labelImage.image!.getColors(quality: .low)
-        self.updateColors()
-        
-        fetchBeerDetails()
+        self.updateColors(false)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -74,20 +86,36 @@ class BeerDetailViewController: UIViewController {
     }
     
     //MARK: - Private Methods
-    private func updateColors(){
-        labelImage.addGradientLayer(colors: [.clear, colors.background])
-        self.view.backgroundColor = colors.background
-        navigationController!.navigationBar.barTintColor = colors.background
-        nameLabel.textColor = colors.primary
-        breweryNameLabel.textColor = colors.detail
-        beerStyleLabel.textColor = colors.secondary
-        abvLabel.textColor = colors.secondary
-        ibuLabel.textColor = colors.secondary
-        beerDescriptionLabel.textColor = colors.secondary
+    private func updateColors(_ animated: Bool){
+        if(animated){
+            UIView.animate(withDuration: 0.5, animations: self.setColors)
+        }else{
+            self.setColors()
+        }
+    }
+    
+    private func setColors() -> Void{
+        self.view.backgroundColor = self.colors.primary
+        self.navigationController!.navigationBar.barTintColor = self.colors.background
         
-        scrollContainerView.backgroundColor = colors.background
-        scrollContainerView.layer.borderColor = colors.background.lighter().cgColor
-        scrollContainerView.layer.shadowColor = colors.background.darker().cgColor
+        self.meRatingTitleLabel.textColor = self.colors.background
+        self.everyoneRatingTitleLabel.textColor = self.colors.background
+        
+        self.ibuTitleLabel.textColor = self.colors.primary
+        self.abvTitleLabel.textColor = self.colors.primary
+        
+        self.nameLabel.textColor = self.colors.primary
+        self.breweryNameLabel.textColor = self.colors.detail
+        self.beerStyleLabel.textColor = self.colors.secondary
+        self.abvLabel.textColor = self.colors.secondary
+        self.ibuLabel.textColor = self.colors.secondary
+        self.beerDescriptionLabel.textColor = self.colors.secondary
+        
+        self.scrollContainerView.backgroundColor = self.colors.background
+        self.scrollContainerView.layer.borderColor = self.colors.background.lighter().cgColor
+        self.scrollContainerView.layer.shadowColor = self.colors.background.darker().cgColor
+        
+        self.labelImage.layer.shadowColor = self.colors.background.darker().cgColor
     }
     
     private func fetchBeerDetails(){
@@ -98,10 +126,11 @@ class BeerDetailViewController: UIViewController {
                 
                 let beerData = json["response"]["beer"]
                 
+                self.beer!.everyoneRating = beerData["rating_score"].doubleValue
                 self.beer!.brewery = beerData["brewery"]["brewery_name"].stringValue
                 self.beer!.drunk = beerData["auth_rating"].intValue > 0
                 self.beer!.style = beerData["beer_style"].stringValue
-                self.beer!.abv = beerData["beer_abv"].floatValue
+                self.beer!.abv = beerData["beer_abv"].doubleValue
                 self.beer!.ibu = beerData["beer_ibu"].intValue
                 self.beer!.beerDescription = beerData["beer_description"].stringValue
                 
@@ -109,6 +138,8 @@ class BeerDetailViewController: UIViewController {
                     Alamofire.request(beerData["beer_label_hd"].stringValue).responseImage { response in
                         self.beer!.image = response.result.value!
                         self.labelImage.image = self.beer!.image
+                        self.colors = self.labelImage.image!.getColors(quality: .low)
+                        self.updateColors(true)
                     }
                 }
                 
@@ -121,6 +152,7 @@ class BeerDetailViewController: UIViewController {
     }
 
     private func updateBeerView(){
+        everyoneRatingDisplay.rating = beer!.everyoneRating!
         beerStyleLabel.text = beer!.style
         abvLabel.text = String(beer!.abv!)
         ibuLabel.text = String(beer!.ibu!)

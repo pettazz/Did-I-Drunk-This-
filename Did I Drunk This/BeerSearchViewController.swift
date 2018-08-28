@@ -82,7 +82,7 @@ class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITab
                         image: UIImage(),
                         imageURL: subJson["beer"]["beer_label"].stringValue,
                         drunk: subJson["have_had"].boolValue,
-                        meRating: Float(round(subJson["beer"]["auth_rating"].floatValue * 10) / 10)
+                        meRating: subJson["beer"]["auth_rating"].doubleValue
                     )
                     Alamofire.request(newBeer.imageURL).responseImage { response in
                         newBeer.image = response.result.value!

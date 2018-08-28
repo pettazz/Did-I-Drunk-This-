@@ -10,17 +10,6 @@ import UIKit
 
 // a whole pile of various helper extensions
 
-/* thanks to https://stackoverflow.com/a/42546043/431223 */
-extension UIImageView{
-    func addGradientLayer(colors:[UIColor]){
-        let gradient = CAGradientLayer()
-        gradient.frame = CGRect(x: 0.0, y: 0.0, width: self.frame.width, height: self.frame.height)
-        gradient.colors = colors.map{$0.cgColor}
-        gradient.startPoint = CGPoint(x: 0.5, y: 0.0)
-        self.layer.addSublayer(gradient)
-    }
-}
-
 /* thanks to https://stackoverflow.com/a/42381754/431223 */
 extension UIColor {
     /**
