@@ -27,6 +27,7 @@ class BeerDetailViewController: UIViewController {
     
     @IBOutlet weak var scrollContainerView: UIScrollView!
     @IBOutlet weak var spinner: UIActivityIndicatorView!
+    @IBOutlet weak var backgroundLayerView: UIView!
     
     @IBOutlet weak var meRatingTitleLabel: UILabel!
     @IBOutlet weak var everyoneRatingTitleLabel: UILabel!
@@ -55,11 +56,7 @@ class BeerDetailViewController: UIViewController {
         
         navigationItem.largeTitleDisplayMode = .never
         
-        scrollContainerView.layer.borderWidth = 1
-        scrollContainerView.layer.shadowOpacity = 0.9
-        scrollContainerView.layer.shadowOffset = CGSize(width: 0, height: 0)
-        scrollContainerView.layer.shadowRadius = 2
-        scrollContainerView.layer.masksToBounds = false
+        backgroundLayerView.layer.borderWidth = 1
         
         nameLabel.text = beer!.name
         breweryNameLabel.text = beer!.brewery
@@ -80,6 +77,12 @@ class BeerDetailViewController: UIViewController {
         
         UIApplication.shared.statusBarStyle = self.colors.background.isLight()! ? .default : .lightContent
     }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        self.updateColors(false)
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -95,7 +98,10 @@ class BeerDetailViewController: UIViewController {
     }
     
     private func setColors() -> Void{
-        self.view.backgroundColor = self.colors.primary
+        self.backgroundLayerView.backgroundColor = self.colors.primary
+        self.backgroundLayerView.layer.borderColor = self.colors.background.lighter().cgColor
+        self.backgroundLayerView.addShadow(to: [.bottom], radius: 3.0, fromColor: self.colors.background.darker(), toColor:self.colors.primary)
+        
         self.navigationController!.navigationBar.barTintColor = self.colors.background
         
         self.meRatingTitleLabel.textColor = self.colors.background
@@ -112,8 +118,6 @@ class BeerDetailViewController: UIViewController {
         self.beerDescriptionLabel.textColor = self.colors.secondary
         
         self.scrollContainerView.backgroundColor = self.colors.background
-        self.scrollContainerView.layer.borderColor = self.colors.background.lighter().cgColor
-        self.scrollContainerView.layer.shadowColor = self.colors.background.darker().cgColor
         
         self.labelImage.layer.shadowColor = self.colors.background.darker().cgColor
     }
