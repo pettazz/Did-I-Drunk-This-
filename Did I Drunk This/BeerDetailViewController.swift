@@ -52,8 +52,6 @@ class BeerDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        fetchBeerDetails()
-        
         navigationItem.largeTitleDisplayMode = .never
         
         backgroundLayerView.layer.borderWidth = 1
@@ -76,6 +74,13 @@ class BeerDetailViewController: UIViewController {
         super.viewWillAppear(animated)
         
         UIApplication.shared.statusBarStyle = self.colors.background.isLight()! ? .default : .lightContent
+        spinner.activityIndicatorViewStyle = self.colors.background.isLight()! ? .gray : .white
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        fetchBeerDetails()
     }
     
     override func viewDidLayoutSubviews() {
@@ -140,12 +145,18 @@ class BeerDetailViewController: UIViewController {
                     Alamofire.request(beerData["beer_label_hd"].stringValue).responseImage { response in
                         self.beer!.image = response.result.value!
                         self.labelImage.image = self.beer!.image
-                        self.colors = self.labelImage.image!.getColors(quality: .low)
+                        self.colors = self.labelImage.image!.getColors(quality: .high)
+                        
+                        self.spinner.stopAnimating()
                         self.updateColors(true)
+                        self.updateBeerView()
                     }
+                }else{
+                    self.spinner.stopAnimating()
+                    self.updateColors(true)
+                    self.updateBeerView()
                 }
                 
-                self.updateBeerView()
             },
             onError: {error, rateLimitRemaining, errorTitle, errorMessage in
                 self.spinner.stopAnimating()
