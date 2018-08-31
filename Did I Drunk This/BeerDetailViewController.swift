@@ -125,9 +125,7 @@ class BeerDetailViewController: UIViewController {
     private func fetchBeerDetails(){
         untappdMachine.beerDetails(
             beerID: self.beer!.id,
-            onSuccess: {json in
-                self.spinner.stopAnimating()
-                
+            onSuccess: {json, rateLimitRemaining in
                 let beerData = json["response"]["beer"]
                 
                 self.beer!.everyoneRating = beerData["rating_score"].doubleValue
@@ -149,8 +147,12 @@ class BeerDetailViewController: UIViewController {
                 
                 self.updateBeerView()
             },
-            onError: {error in
+            onError: {error, rateLimitRemaining, errorTitle, errorMessage in
                 self.spinner.stopAnimating()
+                
+                let alert = UIAlertController(title: errorTitle, message: errorMessage, preferredStyle: .actionSheet)
+                alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .cancel))
+                self.present(alert, animated: true, completion: nil)
             }
         )
     }

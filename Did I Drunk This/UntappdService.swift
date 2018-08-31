@@ -107,8 +107,8 @@ class UntappdService: NSObject {
     private func get(
         endpointName: String,
         withParams: String...,
-        onSuccess: @escaping (_ responseValue: JSON) -> Void,
-        onError: @escaping (_ error: Error) -> Void){
+        onSuccess: @escaping (_ responseValue: JSON, _ rateLimitRemaining: Int?) -> Void,
+        onError: @escaping (_ error: Error, _ rateLimitRemaining: Int?, _ errorTitle: String, _ errorMessage: String) -> Void){
         
         self.ensureTokenExists(onboardingViewController: nil)
         
@@ -125,28 +125,95 @@ class UntappdService: NSObject {
             url += "?access_token=\(self.token)"
         }
         
-        Alamofire.request(url)
-                 .validate(statusCode: 200..<300)
-                 .responseSwiftyJSON { response in
-                    
-            os_log("Request: %@", type: .debug , String(describing: response.request))
-            os_log("Rate limit remaining: %@", type: .debug, (response.response?.allHeaderFields["X-Ratelimit-Remaining"].debugDescription)!)
+        os_log("Request URL: %@", type: .debug , String(describing: url))
+        
+        Alamofire.request(url).validate(statusCode: 200..<300).responseSwiftyJSON { response in
+            let rateLimitRemaining: Int?
+            if let rateLimitHeaderValue = response.response?.allHeaderFields["X-Ratelimit-Remaining"] as? String {
+                rateLimitRemaining = Int(rateLimitHeaderValue)
+            }else{
+                rateLimitRemaining = nil
+            }
+            os_log("Rate limit remaining: %@", type: .debug, (rateLimitRemaining.debugDescription))
             
             switch response.result{
                 case .success:
-                    onSuccess(response.value!)
+                    onSuccess(response.value!, rateLimitRemaining)
                 case .failure(let error):
-                    os_log("Response error: %@", type: .error, error.localizedDescription)
-                    onError(error)
+                    let errorDetails = self.getFriendlyErrorDetails(afError: error, response: response)
+                    onError(error, rateLimitRemaining, errorDetails.title, errorDetails.message)
             }
         }
     }
     
+    //MARK: error handling
+    private func getFriendlyErrorDetails(afError: Error, response: DataResponse<JSON>) -> (title: String, message: String){
+        os_log("Response error: %@", type: .error, afError.localizedDescription)
+        
+        let titles = [
+            "Aw, Dang",
+            "Aw, Beans",
+            "Oh No",
+            "Aw, Jeez",
+            "Aw, Farts",
+            "Welp",
+            "Uh Oh",
+            "Sorry"
+        ]
+        
+        //TODO: when swift 4.2 is out, use titles.randomElement()! instead
+        //why did it take this long?
+        let randomIndex = Int(arc4random_uniform(UInt32(titles.count)))
+        var errorTitle = titles[randomIndex], errorMessage = "Something went wrong, try again!"
+        
+        if let err = afError as? URLError {
+            // network errors
+            switch(err.code){
+                case .notConnectedToInternet, .networkConnectionLost:
+                    errorMessage = "You're not connected to the internet! Get online and try again."
+                case .timedOut:
+                    errorMessage = "We couldn't reach Untappd, you may not be connected to the internet! Try again later."
+                default:
+                    errorMessage = "Untappd isn't responding! Try again in a bit."
+            }
+        }else{
+            // responses that were bad in some way
+            if let body = response.data {
+                let errorBody = JSON(body)
+                let untappdErrorType = errorBody["meta"]["error_type"].string
+                let untappdErrorDetail = errorBody["meta"]["error_detail"].string
+                let untappdErrorFriendly = errorBody["meta"]["developer_friendly"].string
+                
+                os_log("Untappd Error Type: %@", type: .error, untappdErrorType ?? "none")
+                os_log("Untappd Error Details: %@", type: .error, untappdErrorDetail ?? "none")
+                os_log("Untappd Error Friendly: %@", type: .error, untappdErrorFriendly ?? "none")
+                
+                if let friendly = untappdErrorFriendly.nilIfEmpty {
+                    errorMessage = friendly
+                }else{
+                    switch(untappdErrorType){
+                        case "invalid_limit":
+                            errorMessage = "Whoa, whoa, slow down! You've reached your limit for requests to Untappd for the hour! Try again in a bit."
+                        case "DB_Error":
+                            errorMessage = "Untappd is currently down! Try again later."
+                        case "invalid_auth":
+                            errorMessage = "Your login has expired, go back to the search page to log in again."
+                        default:
+                            errorMessage = "We couldn't talk to Untappd for some reason! Try again in a bit."
+                    }
+                }
+            }
+        }
+        
+        return (title: errorTitle, message: errorMessage)
+    }
+    
+    //MARK: public methods
     //MARK: specific endpoints
     public func beerSearch(
         searchText: String,
-        onSuccess: @escaping (_ responseValue: JSON) -> Void,
-        onError: @escaping (_ error: Error) -> Void){
+        onSuccess: @escaping (_ responseValue: JSON, _ rateLimitRemaining: Int?) -> Void,
+        onError: @escaping (_ error: Error, _ rateLimitRemaining: Int?, _ errorTitle: String, _ errorMessage: String) -> Void){
         
         self.get(
             endpointName: "BeerSearch",
@@ -157,8 +224,8 @@ class UntappdService: NSObject {
     
     public func beerDetails(
         beerID: Int,
-        onSuccess: @escaping (_ responseValue: JSON) -> Void,
-        onError: @escaping (_ error: Error) -> Void){
+        onSuccess: @escaping (_ responseValue: JSON, _ rateLimitRemaining: Int?) -> Void,
+        onError: @escaping (_ error: Error, _ rateLimitRemaining: Int?, _ errorTitle: String, _ errorMessage: String) -> Void){
         
         self.get(
             endpointName: "BeerDetails",

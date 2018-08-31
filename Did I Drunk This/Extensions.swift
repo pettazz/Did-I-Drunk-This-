@@ -10,6 +10,16 @@ import UIKit
 
 // a whole pile of various helper extensions
 
+/* thanks to https://medium.com/ios-os-x-development/handling-empty-optional-strings-in-swift-ba77ef627d74 */
+extension Optional where Wrapped == String {
+    var nilIfEmpty: String? {
+        guard let strongSelf = self else {
+            return nil
+        }
+        return strongSelf.isEmpty ? nil : strongSelf
+    }
+}
+
 /* thanks to https://stackoverflow.com/a/42381754/431223 */
 extension UIColor {
     /**

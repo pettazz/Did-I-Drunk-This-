@@ -69,7 +69,7 @@ class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITab
         
         untappdMachine.beerSearch(
             searchText: searchText,
-            onSuccess: {json in
+            onSuccess: {json, rateLimitRemaining in
                 var newBeerList = [Beer]()
                 let responseBeers = json["response"]["beers"]["items"]
                 
@@ -96,9 +96,13 @@ class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITab
                 
                 self.tableView.reloadData()
             },
-            onError: {error in
+            onError: {error, rateLimitRemaining, errorTitle, errorMessage in
                 //TODO: better error handling
                 self.tableView.viewWithTag(101)?.removeFromSuperview()
+                
+                let alert = UIAlertController(title: errorTitle, message: errorMessage, preferredStyle: .actionSheet)
+                alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .cancel))
+                self.present(alert, animated: true, completion: nil)
             }
         )
     }
