@@ -41,11 +41,18 @@ class BeerDetailViewController: UIViewController {
     @IBOutlet weak var ibuLabel: UILabel!
     @IBOutlet weak var beerDescriptionLabel: UILabel!
     
+    @IBOutlet weak var untappdLinkButton: UIButton!
+    @IBOutlet weak var checkinButton: UIButton!
+    
     @IBOutlet weak var meRatingDisplay: CosmosView!
     @IBOutlet weak var everyoneRatingDisplay: CosmosView!
     
     @IBAction func unwindSegueToBeerSearch(_ sender: Any) {
         performSegue(withIdentifier: "unwindSegueToBeerSearch", sender: self)
+    }
+    
+    @IBAction func linkToUntappd() {
+        self.openUntappdURL()
     }
     
     //MARK: - UIViewController
@@ -66,15 +73,17 @@ class BeerDetailViewController: UIViewController {
         labelImage.layer.shadowRadius = 3
         labelImage.layer.masksToBounds = false
         
-        self.colors = labelImage.image!.getColors(quality: .low)
-        self.updateColors(false)
+        colors = labelImage.image!.getColors(quality: .low)
+        updateColors(false)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        UIApplication.shared.statusBarStyle = self.colors.background.isLight()! ? .default : .lightContent
-        spinner.activityIndicatorViewStyle = self.colors.background.isLight()! ? .gray : .white
+        let isBackgroundLight = self.colors.background.isLight()!
+        
+        UIApplication.shared.statusBarStyle = isBackgroundLight ? .default : .lightContent
+        spinner.activityIndicatorViewStyle = isBackgroundLight ? .gray : .white
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -114,6 +123,8 @@ class BeerDetailViewController: UIViewController {
         
         self.ibuTitleLabel.textColor = self.colors.primary
         self.abvTitleLabel.textColor = self.colors.primary
+        
+        self.untappdLinkButton.setTitleColor(self.colors.detail, for: .normal)
         
         self.nameLabel.textColor = self.colors.primary
         self.breweryNameLabel.textColor = self.colors.detail
@@ -176,4 +187,9 @@ class BeerDetailViewController: UIViewController {
         beerDescriptionLabel.text = beer!.beerDescription
     }
     
+    private func openUntappdURL(){
+        if let url = URL(string:"untappd://beer/\(self.beer!.id)"){
+            UIApplication.shared.open(url)
+        }
+    }
 }

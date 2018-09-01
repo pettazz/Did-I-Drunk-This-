@@ -185,6 +185,19 @@
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Hdc-We-hUu">
+                                        <rect key="frame" x="310" y="100" width="56" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="Checkin"/>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tgF-4T-zdO">
+                                        <rect key="frame" x="232" y="100" width="60" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="Untappd"/>
+                                        <connections>
+                                            <action selector="linkToUntappd" destination="Vfo-zn-g6l" eventType="touchUpInside" id="4RR-Ho-R8W"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
@@ -308,6 +321,7 @@
                         <outlet property="beerDescriptionLabel" destination="oAP-Bk-9gX" id="c5q-75-Fty"/>
                         <outlet property="beerStyleLabel" destination="IJR-PO-lDS" id="zXd-OJ-N41"/>
                         <outlet property="breweryNameLabel" destination="RHs-4o-WgG" id="TYN-Lc-heV"/>
+                        <outlet property="checkinButton" destination="Hdc-We-hUu" id="df8-uJ-UbS"/>
                         <outlet property="everyoneRatingDisplay" destination="Rse-oE-fJ2" id="bA7-yf-Fgb"/>
                         <outlet property="everyoneRatingTitleLabel" destination="gVx-6N-1mP" id="EV6-VB-9OY"/>
                         <outlet property="ibuLabel" destination="rSK-Yz-h51" id="Zl4-lW-RMS"/>
@@ -318,6 +332,7 @@
                         <outlet property="nameLabel" destination="a9w-ci-ERY" id="hH3-ph-s8O"/>
                         <outlet property="scrollContainerView" destination="1F2-kH-3W3" id="J92-eA-5q5"/>
                         <outlet property="spinner" destination="Uvx-QH-ofX" id="GLY-Gp-PRo"/>
+                        <outlet property="untappdLinkButton" destination="tgF-4T-zdO" id="8Tz-cR-aVO"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GhC-Qf-4nm" userLabel="First Responder" sceneMemberID="firstResponder"/>
