@@ -14,7 +14,7 @@ class BeerTableViewCell: UITableViewCell {
     @IBOutlet weak var breweryLabel: UILabel!
     @IBOutlet weak var ratingImage: UIImageView!
     @IBOutlet weak var ratingLabel: UILabel!
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

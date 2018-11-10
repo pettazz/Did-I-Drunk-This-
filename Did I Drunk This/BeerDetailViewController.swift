@@ -15,54 +15,58 @@ import Cosmos
 import UIImageColors
 
 class BeerDetailViewController: UIViewController {
-    
-    //MARK: - Properties
+
+    // MARK: - Properties
     let untappdMachine = UntappdService()
     var colors = UIImageColors(background: .darkGray, primary: .white, secondary: .gray, detail: .orange)
-    
+
     var beer: Beer?
     var beerLabelImage: UIImage?
-    
+
     @IBOutlet weak var labelImage: UIImageView!
-    
+
     @IBOutlet weak var scrollContainerView: UIScrollView!
     @IBOutlet weak var spinner: UIActivityIndicatorView!
     @IBOutlet weak var backgroundLayerView: UIView!
-    
+
     @IBOutlet weak var meRatingTitleLabel: UILabel!
     @IBOutlet weak var everyoneRatingTitleLabel: UILabel!
     @IBOutlet weak var abvTitleLabel: UILabel!
     @IBOutlet weak var ibuTitleLabel: UILabel!
-    
+
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var breweryNameLabel: UILabel!
     @IBOutlet weak var beerStyleLabel: UILabel!
     @IBOutlet weak var abvLabel: UILabel!
     @IBOutlet weak var ibuLabel: UILabel!
     @IBOutlet weak var beerDescriptionLabel: UILabel!
-    
+
     @IBOutlet weak var untappdLinkButton: UIButton!
     @IBOutlet weak var checkinButton: UIButton!
-    
+
     @IBOutlet weak var meRatingDisplay: CosmosView!
     @IBOutlet weak var everyoneRatingDisplay: CosmosView!
-    
+
     @IBAction func unwindSegueToBeerSearch(_ sender: Any) {
         performSegue(withIdentifier: "unwindSegueToBeerSearch", sender: self)
     }
-    
+
     @IBAction func linkToUntappd() {
         self.openUntappdURL()
     }
-    
-    //MARK: - UIViewController
+
+    @IBAction func checkin() {
+
+    }
+
+    // MARK: - UIViewController
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         navigationItem.largeTitleDisplayMode = .never
-        
+
         backgroundLayerView.layer.borderWidth = 1
-        
+
         nameLabel.text = beer!.name
         breweryNameLabel.text = beer!.brewery
         meRatingDisplay.rating = beer!.meRating
@@ -72,37 +76,37 @@ class BeerDetailViewController: UIViewController {
         labelImage.layer.shadowOffset = CGSize(width: 0, height: 0)
         labelImage.layer.shadowRadius = 3
         labelImage.layer.masksToBounds = false
-        
+
         colors = labelImage.image!.getColors(quality: .low)
         updateColors(false)
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+
         let isBackgroundLight = self.colors.background.isLight()!
-        
+
         UIApplication.shared.statusBarStyle = isBackgroundLight ? .default : .lightContent
-        spinner.activityIndicatorViewStyle = isBackgroundLight ? .gray : .white
+        spinner.style = isBackgroundLight ? .gray : .white
     }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
+
         fetchBeerDetails()
     }
-    
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        
+
         self.updateColors(false)
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
-    
-    //MARK: - Private Methods
+
+    // MARK: - Private Methods
     private func updateColors(_ animated: Bool){
         if(animated){
             UIView.animate(withDuration: 0.5, animations: self.setColors)
@@ -110,40 +114,40 @@ class BeerDetailViewController: UIViewController {
             self.setColors()
         }
     }
-    
-    private func setColors() -> Void{
+
+    private func setColors(){
         self.backgroundLayerView.backgroundColor = self.colors.primary
         self.backgroundLayerView.layer.borderColor = self.colors.background.lighter().cgColor
         self.backgroundLayerView.addShadow(to: [.bottom], radius: 3.0, fromColor: self.colors.background.darker(), toColor:self.colors.primary)
-        
+
         self.navigationController!.navigationBar.barTintColor = self.colors.background
-        
+
         self.meRatingTitleLabel.textColor = self.colors.background
         self.everyoneRatingTitleLabel.textColor = self.colors.background
-        
+
         self.ibuTitleLabel.textColor = self.colors.primary
         self.abvTitleLabel.textColor = self.colors.primary
-        
+
         self.untappdLinkButton.setTitleColor(self.colors.detail, for: .normal)
-        
+
         self.nameLabel.textColor = self.colors.primary
         self.breweryNameLabel.textColor = self.colors.detail
         self.beerStyleLabel.textColor = self.colors.secondary
         self.abvLabel.textColor = self.colors.secondary
         self.ibuLabel.textColor = self.colors.secondary
         self.beerDescriptionLabel.textColor = self.colors.secondary
-        
+
         self.scrollContainerView.backgroundColor = self.colors.background
-        
+
         self.labelImage.layer.shadowColor = self.colors.background.darker().cgColor
     }
-    
+
     private func fetchBeerDetails(){
         untappdMachine.beerDetails(
             beerID: self.beer!.id,
             onSuccess: {json, rateLimitRemaining in
                 let beerData = json["response"]["beer"]
-                
+
                 self.beer!.everyoneRating = beerData["rating_score"].doubleValue
                 self.beer!.brewery = beerData["brewery"]["brewery_name"].stringValue
                 self.beer!.drunk = beerData["auth_rating"].intValue > 0
@@ -151,13 +155,13 @@ class BeerDetailViewController: UIViewController {
                 self.beer!.abv = beerData["beer_abv"].doubleValue
                 self.beer!.ibu = beerData["beer_ibu"].intValue
                 self.beer!.beerDescription = beerData["beer_description"].stringValue
-                
+
                 if(!beerData["beer_label_hd"].stringValue.isEmpty){
                     Alamofire.request(beerData["beer_label_hd"].stringValue).responseImage { response in
                         self.beer!.image = response.result.value!
                         self.labelImage.image = self.beer!.image
                         self.colors = self.labelImage.image!.getColors(quality: .high)
-                        
+
                         self.spinner.stopAnimating()
                         self.updateColors(true)
                         self.updateBeerView()
@@ -167,11 +171,11 @@ class BeerDetailViewController: UIViewController {
                     self.updateColors(true)
                     self.updateBeerView()
                 }
-                
+
             },
             onError: {error, rateLimitRemaining, errorTitle, errorMessage in
                 self.spinner.stopAnimating()
-                
+
                 let alert = UIAlertController(title: errorTitle, message: errorMessage, preferredStyle: .actionSheet)
                 alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .cancel))
                 self.present(alert, animated: true, completion: nil)
@@ -186,7 +190,7 @@ class BeerDetailViewController: UIViewController {
         ibuLabel.text = String(beer!.ibu!)
         beerDescriptionLabel.text = beer!.beerDescription
     }
-    
+
     private func openUntappdURL(){
         if let url = URL(string:"untappd://beer/\(self.beer!.id)"){
             UIApplication.shared.open(url)

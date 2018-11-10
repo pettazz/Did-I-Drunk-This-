@@ -1,0 +1,14 @@
+excluded:
+  - Pods
+disabled_rules:
+  - vertical_whitespace
+  - control_statement
+  - line_length
+  - type_name
+  - opening_brace
+  - todo
+  - identifier_name
+  - statement_position
+  - switch_case_alignment
+  - function_body_length
+  - colon

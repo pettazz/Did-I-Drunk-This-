@@ -26,7 +26,7 @@ class UntappdService: NSObject {
         authorizeUrl:   K.Untappd.Endpoint["Authenticate"]!,
         responseType:   "token"
     )
-    
+
     // MARK: - public methods
     func ensureTokenExists(onboardingViewController: UIViewController?){
         if(self.token.isEmpty){
@@ -43,7 +43,7 @@ class UntappdService: NSObject {
             }
         }
     }
-    
+
     // MARK: - private methods
     // MARK: token/login handling
     private func getStoredToken() throws -> String{
@@ -59,21 +59,21 @@ class UntappdService: NSObject {
             fatalError("Unable to access untappd-token in Keychain")
         }
     }
-    
+
     private func storeToken(token: String){
         self.keychain[string: "untappd-token"] = token
     }
-    
+
     private func attemptOnboarding(presentingViewController: UIViewController){
         let page = OnboardPage(title: "You gotta log in tho",
                                imageName: "onboard",
                                description: "Promise not to steal your Untappd identity.",
                                advanceButtonTitle: "Cancel",
                                actionButtonTitle: "Log in with Untappd",
-                               action: {
-                                [weak self] completion in
-                                self?.login(presentingViewController, completion)
-        })
+                               action: { [weak self] completion in
+                                   self?.login(presentingViewController, completion)
+                               }
+        )
         let appearance = OnboardViewController.AppearanceConfiguration(tintColor: .white,
                                                                        textColor: .black,
                                                                        backgroundColor: .orange,
@@ -82,16 +82,16 @@ class UntappdService: NSObject {
         let onboardingViewController = OnboardViewController(pageItems: [page], appearanceConfiguration: appearance)
         onboardingViewController.presentFrom(presentingViewController, animated: true)
     }
-    
+
     private func login(_ presentingViewController: UIViewController, _ completion: @escaping (_ success: Bool, _ error: Error?) -> Void){
         self.oauthswift.authorizeURLHandler = SafariURLHandler(
             viewController: presentingViewController.presentedViewController!,
             oauthSwift: self.oauthswift)
-        
-        let _ = self.oauthswift.authorize(
+
+        _ = self.oauthswift.authorize(
             withCallbackURL: URL(string: "dididrunkthis://oauth-callback/untappd")!,
             scope: "",
-            state:"DIDIDRUNKTHIS",
+            state: "DIDIDRUNKTHIS",
             success: { credential, response, parameters in
                 self.storeToken(token: credential.oauthToken)
                 self.token = credential.oauthToken
@@ -102,31 +102,31 @@ class UntappdService: NSObject {
             }
         )
     }
-    
-    //MARK: rest call internals
+
+    // MARK: rest call internals
     private func get(
         endpointName: String,
         withParams: String...,
         onSuccess: @escaping (_ responseValue: JSON, _ rateLimitRemaining: Int?) -> Void,
         onError: @escaping (_ error: Error, _ rateLimitRemaining: Int?, _ errorTitle: String, _ errorMessage: String) -> Void){
-        
+
         self.ensureTokenExists(onboardingViewController: nil)
-        
+
         var preparedParams = [String]()
         for(param):(String) in withParams{
             preparedParams.append(param.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)
         }
-        
+
         //TODO: this is pretty dumb, i assume alamofire would make this much easier
         var url = String(format: K.Untappd.Endpoint[endpointName]!, arguments: preparedParams)
-        if(url.range(of:"?") != nil){
+        if(url.range(of: "?") != nil){
             url += "&access_token=\(self.token)"
         }else{
             url += "?access_token=\(self.token)"
         }
-        
-        os_log("Request URL: %@", type: .debug , String(describing: url))
-        
+
+        os_log("Request URL: %@", type: .debug, String(describing: url))
+
         Alamofire.request(url).validate(statusCode: 200..<300).responseSwiftyJSON { response in
             let rateLimitRemaining: Int?
             if let rateLimitHeaderValue = response.response?.allHeaderFields["X-Ratelimit-Remaining"] as? String {
@@ -135,7 +135,7 @@ class UntappdService: NSObject {
                 rateLimitRemaining = nil
             }
             os_log("Rate limit remaining: %@", type: .debug, (rateLimitRemaining.debugDescription))
-            
+
             switch response.result{
                 case .success:
                     onSuccess(response.value!, rateLimitRemaining)
@@ -145,11 +145,11 @@ class UntappdService: NSObject {
             }
         }
     }
-    
-    //MARK: error handling
+
+    // MARK: error handling
     private func getFriendlyErrorDetails(afError: Error, response: DataResponse<JSON>) -> (title: String, message: String){
         os_log("Response error: %@", type: .error, afError.localizedDescription)
-        
+
         let titles = [
             "Aw, Dang",
             "Aw, Beans",
@@ -160,12 +160,12 @@ class UntappdService: NSObject {
             "Uh Oh",
             "Sorry"
         ]
-        
+
         //TODO: when swift 4.2 is out, use titles.randomElement()! instead
         //why did it take this long?
         let randomIndex = Int(arc4random_uniform(UInt32(titles.count)))
         var errorTitle = titles[randomIndex], errorMessage = "Something went wrong, try again!"
-        
+
         if let err = afError as? URLError {
             // network errors
             switch(err.code){
@@ -183,11 +183,11 @@ class UntappdService: NSObject {
                 let untappdErrorType = errorBody["meta"]["error_type"].string
                 let untappdErrorDetail = errorBody["meta"]["error_detail"].string
                 let untappdErrorFriendly = errorBody["meta"]["developer_friendly"].string
-                
+
                 os_log("Untappd Error Type: %@", type: .error, untappdErrorType ?? "none")
                 os_log("Untappd Error Details: %@", type: .error, untappdErrorDetail ?? "none")
                 os_log("Untappd Error Friendly: %@", type: .error, untappdErrorFriendly ?? "none")
-                
+
                 if let friendly = untappdErrorFriendly.nilIfEmpty {
                     errorMessage = friendly
                 }else{
@@ -204,36 +204,36 @@ class UntappdService: NSObject {
                 }
             }
         }
-        
+
         return (title: errorTitle, message: errorMessage)
     }
-    
-    //MARK: public methods
-    //MARK: specific endpoints
+
+    // MARK: public methods
+    // MARK: specific endpoints
     public func beerSearch(
         searchText: String,
         onSuccess: @escaping (_ responseValue: JSON, _ rateLimitRemaining: Int?) -> Void,
         onError: @escaping (_ error: Error, _ rateLimitRemaining: Int?, _ errorTitle: String, _ errorMessage: String) -> Void){
-        
+
         self.get(
             endpointName: "BeerSearch",
             withParams: searchText,
             onSuccess: onSuccess,
             onError: onError)
     }
-    
+
     public func beerDetails(
         beerID: Int,
         onSuccess: @escaping (_ responseValue: JSON, _ rateLimitRemaining: Int?) -> Void,
         onError: @escaping (_ error: Error, _ rateLimitRemaining: Int?, _ errorTitle: String, _ errorMessage: String) -> Void){
-        
+
         self.get(
             endpointName: "BeerDetails",
             withParams: String(beerID),
             onSuccess: onSuccess,
             onError: onError)
     }
-        
+
 }
 
 enum TokenError: Error {

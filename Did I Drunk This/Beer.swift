@@ -10,8 +10,8 @@ import Foundation
 import UIKit
 
 class Beer: NSObject{
-    
-    //MARK: Properties
+
+    // MARK: Properties
     var id: Int
     var name: String
     var brewery: String
@@ -19,14 +19,14 @@ class Beer: NSObject{
     var imageURL: String
     var drunk: Bool = false
     var meRating: Double
-    var everyoneRating: Double? = nil
-    var abv: Double? = nil
-    var ibu: Int? = nil
-    var style: String? = nil
-    var beerDescription: String? = nil
-    var onWishList: Bool? = nil
+    var everyoneRating: Double?
+    var abv: Double?
+    var ibu: Int?
+    var style: String?
+    var beerDescription: String?
+    var onWishList: Bool?
 
-    //MARK: Initialization
+    // MARK: Initialization
     init(id: Int,
          name: String,
          brewery: String,
@@ -42,7 +42,7 @@ class Beer: NSObject{
         self.drunk = drunk
         self.meRating = meRating
     }
-    
-    
-    
+
+
+
 }

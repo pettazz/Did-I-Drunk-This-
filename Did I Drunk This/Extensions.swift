@@ -28,14 +28,14 @@ extension UIColor {
     func lighter(by percentage: CGFloat = 30.0) -> UIColor {
         return self.adjustBrightness(by: abs(percentage))
     }
-    
+
     /**
      Create a darker color
      */
     func darker(by percentage: CGFloat = 30.0) -> UIColor {
         return self.adjustBrightness(by: -abs(percentage))
     }
-    
+
     /**
      Try to increase brightness or decrease saturation
      */
@@ -56,13 +56,13 @@ extension UIColor {
 
 /* thanks to https://stackoverflow.com/a/29044899/431223 */
 extension UIColor {
-    
+
     // Check if the color is light or dark, as defined by the injected lightness threshold.
     // Some people report that 0.7 is best. I suggest to find out for yourself.
     // A nil value is returned if the lightness couldn't be determined.
     func isLight(threshold: Float = 0.5) -> Bool? {
         let originalCGColor = self.cgColor
-        
+
         // Now we need to convert it to the RGB colorspace. UIColor.white / UIColor.black are greyscale and not RGB.
         // If you don't do this then you will crash when accessing components index 2 below when evaluating greyscale colors.
         let RGBCGColor = originalCGColor.converted(to: CGColorSpaceCreateDeviceRGB(), intent: .defaultIntent, options: nil)
@@ -72,7 +72,7 @@ extension UIColor {
         guard components.count >= 3 else {
             return nil
         }
-        
+
         let brightness = Float(((components[0] * 299) + (components[1] * 587) + (components[2] * 114)) / 1000)
         return (brightness > threshold)
     }
@@ -81,18 +81,18 @@ extension UIColor {
 
 /* thanks to https://stackoverflow.com/a/47278330/431223 */
 extension UIView{
-    
+
     func addShadow(to edges:[UIRectEdge], radius:CGFloat, fromColor: UIColor, toColor: UIColor){
-        
+
         removeAllSublayers()
-        
+
         // Set up its frame.
         let viewFrame = self.frame
         for edge in edges{
             let gradientlayer          = CAGradientLayer()
-            gradientlayer.colors       = [fromColor.cgColor,toColor.cgColor]
+            gradientlayer.colors       = [fromColor.cgColor, toColor.cgColor]
             gradientlayer.shadowRadius = radius
-            
+
             switch edge {
             case UIRectEdge.top:
                 gradientlayer.startPoint = CGPoint(x: 0.5, y: 0.0)
@@ -115,9 +115,9 @@ extension UIView{
             }
             self.layer.addSublayer(gradientlayer)
         }
-        
+
     }
-    
+
     func removeAllSublayers(){
         if let sublayers = self.layer.sublayers, !sublayers.isEmpty{
             for sublayer in sublayers{
@@ -125,5 +125,5 @@ extension UIView{
             }
         }
     }
-    
+
 }
