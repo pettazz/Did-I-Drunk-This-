@@ -161,10 +161,7 @@ class UntappdService: NSObject {
             "Sorry"
         ]
 
-        //TODO: when swift 4.2 is out, use titles.randomElement()! instead
-        //why did it take this long?
-        let randomIndex = Int(arc4random_uniform(UInt32(titles.count)))
-        var errorTitle = titles[randomIndex], errorMessage = "Something went wrong, try again!"
+        var errorTitle = titles.randomElement() ?? titles[0], errorMessage = "Something went wrong, try again!"
 
         if let err = afError as? URLError {
             // network errors
