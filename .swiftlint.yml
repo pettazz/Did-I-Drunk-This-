@@ -12,3 +12,4 @@ disabled_rules:
   - switch_case_alignment
   - function_body_length
   - colon
+  - trailing_whitespace

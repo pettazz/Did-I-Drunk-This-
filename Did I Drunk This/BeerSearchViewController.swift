@@ -143,6 +143,23 @@ class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITab
         return 0
     }
 
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let selectedBeer = foundBeers[indexPath.row]
+        let title = "Check In"
+
+        let action = UIContextualAction(style: .normal,
+                                        title: title,
+                                        handler: { (_, _, completionHandler) in
+                                            self.performSegue(withIdentifier: "checkinSegue", sender: selectedBeer)
+                                            completionHandler(true)
+        })
+        
+        //action.image = UIImage(named: "ratingBackground")
+        action.backgroundColor = .blue
+        let configuration = UISwipeActionsConfiguration(actions: [action])
+        return configuration
+    }
+
     // MARK: - UISearchResultsUpdating Delegate
     func updateSearchResults(for searchController: UISearchController) {
         if(self.keepExistingSearch){
@@ -160,23 +177,38 @@ class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITab
     // MARK: - Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
-
-        guard let beerDetailController = segue.destination as? BeerDetailViewController else {
-            fatalError("Unexpected destination: \(segue.destination)")
+        
+        switch segue.identifier {
+            case "detailViewSegue":
+                guard let beerDetailController = segue.destination as? BeerDetailViewController else {
+                    fatalError("Unexpected destination: \(segue.destination)")
+                }
+                
+                guard let selectedBeerCell = sender as? BeerTableViewCell else {
+                    fatalError("Unexpected sender: \(String(describing: sender))")
+                }
+                
+                guard let indexPath = tableView.indexPath(for: selectedBeerCell) else {
+                    fatalError("The selected cell is not being displayed by the table")
+                }
+                
+                let selectedBeer = foundBeers[indexPath.row]
+                beerDetailController.beer = selectedBeer
+                beerDetailController.beerLabelImage = selectedBeer.image
+                
+                self.keepExistingSearch = true
+            case "checkinSegue":
+                guard let checkinController = segue.destination as? CheckinViewController else {
+                    fatalError("Unexpected destination: \(segue.destination)")
+                }
+                
+                guard let selectedBeer = sender as? Beer else {
+                    fatalError("Unexpected sender: \(String(describing: sender))")
+                }
+            
+                checkinController.beer = selectedBeer
+            default:
+                break
         }
-
-        guard let selectedBeerCell = sender as? BeerTableViewCell else {
-            fatalError("Unexpected sender: \(String(describing: sender))")
-        }
-
-        guard let indexPath = tableView.indexPath(for: selectedBeerCell) else {
-            fatalError("The selected cell is not being displayed by the table")
-        }
-
-        let selectedBeer = foundBeers[indexPath.row]
-        beerDetailController.beer = selectedBeer
-        beerDetailController.beerLabelImage = selectedBeer.image
-
-        self.keepExistingSearch = true
     }
 }

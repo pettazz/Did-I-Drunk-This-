@@ -56,7 +56,7 @@ class BeerDetailViewController: UIViewController {
     }
 
     @IBAction func checkin() {
-
+        
     }
 
     // MARK: - UIViewController
@@ -195,5 +195,15 @@ class BeerDetailViewController: UIViewController {
         if let url = URL(string:"untappd://beer/\(self.beer!.id)"){
             UIApplication.shared.open(url)
         }
+    }
+
+    // MARK: - Navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard let checkinViewController = segue.destination as? CheckinViewController else {
+            fatalError("Unexpected destination: \(segue.destination)")
+        }
+
+        let selectedBeer = self.beer
+        checkinViewController.beer = selectedBeer
     }
 }
