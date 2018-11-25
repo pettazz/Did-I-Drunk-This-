@@ -102,6 +102,20 @@ class UntappdService: NSObject {
             }
         )
     }
+    
+    private func extractRateLimitRemaining(from response: DataResponse<JSON>) -> Int?{
+        let rateLimitRemaining: Int?
+        
+        if let rateLimitHeaderValue = response.response?.allHeaderFields["x-ratelimit-remaining"] as? String {
+            rateLimitRemaining = Int(rateLimitHeaderValue)
+        }else{
+            rateLimitRemaining = nil
+        }
+        
+        os_log("Rate limit remaining: %@", type: .debug, String(describing: rateLimitRemaining))
+        
+        return rateLimitRemaining
+    }
 
     // MARK: rest call internals
     private func get(
@@ -125,23 +139,46 @@ class UntappdService: NSObject {
             url += "?access_token=\(self.token)"
         }
 
-        os_log("Request URL: %@", type: .debug, String(describing: url))
+        os_log("GET: %@", type: .debug, String(url))
 
         Alamofire.request(url).validate(statusCode: 200..<300).responseSwiftyJSON { response in
-            let rateLimitRemaining: Int?
-            if let rateLimitHeaderValue = response.response?.allHeaderFields["X-Ratelimit-Remaining"] as? String {
-                rateLimitRemaining = Int(rateLimitHeaderValue)
-            }else{
-                rateLimitRemaining = nil
-            }
-            os_log("Rate limit remaining: %@", type: .debug, (rateLimitRemaining.debugDescription))
-
+            let rateLimitRemaining = self.extractRateLimitRemaining(from: response)
             switch response.result{
                 case .success:
                     onSuccess(response.value!, rateLimitRemaining)
                 case .failure(let error):
                     let errorDetails = self.getFriendlyErrorDetails(afError: error, response: response)
                     onError(error, rateLimitRemaining, errorDetails.title, errorDetails.message)
+            }
+        }
+    }
+    
+    private func post(
+        endpointName: String,
+        withParams: Parameters,
+        onSuccess: @escaping (_ responseValue: JSON, _ rateLimitRemaining: Int?) -> Void,
+        onError: @escaping (_ error: Error, _ rateLimitRemaining: Int?, _ errorTitle: String, _ errorMessage: String) -> Void){
+        
+        self.ensureTokenExists(onboardingViewController: nil)
+
+        var url = K.Untappd.Endpoint[endpointName]!
+        if(url.range(of: "?") != nil){
+            url += "&access_token=\(self.token)"
+        }else{
+            url += "?access_token=\(self.token)"
+        }
+        
+        os_log("POST: %@", type: .debug, String(url))
+        os_log("with params: %@", type: .debug, String(describing: withParams))
+        
+        Alamofire.request(url, method: .post, parameters: withParams).validate(statusCode: 200..<300).responseSwiftyJSON { response in
+            let rateLimitRemaining = self.extractRateLimitRemaining(from: response)
+            switch response.result{
+            case .success:
+                onSuccess(response.value!, rateLimitRemaining)
+            case .failure(let error):
+                let errorDetails = self.getFriendlyErrorDetails(afError: error, response: response)
+                onError(error, rateLimitRemaining, errorDetails.title, errorDetails.message)
             }
         }
     }
@@ -227,6 +264,30 @@ class UntappdService: NSObject {
         self.get(
             endpointName: "BeerDetails",
             withParams: String(beerID),
+            onSuccess: onSuccess,
+            onError: onError)
+    }
+    
+    public func checkIn(
+        beerID: Int,
+        rating: Double,
+        onSuccess: @escaping (_ responseValue: JSON, _ rateLimitRemaining: Int?) -> Void,
+        onError: @escaping (_ error: Error, _ rateLimitRemaining: Int?, _ errorTitle: String, _ errorMessage: String) -> Void){
+
+        let myTZ = TimeZone.autoupdatingCurrent
+        let gmtOffset : Int = (myTZ.secondsFromGMT() / 60 / 60)
+        let tzAbbr : String = myTZ.abbreviation() ?? ""
+        
+        let params : Parameters = [
+            "bid": beerID,
+            "gmt_offset": gmtOffset,
+            "timezone": tzAbbr,
+            "rating": rating
+        ]
+        
+        self.post(
+            endpointName: "CheckIn",
+            withParams: params,
             onSuccess: onSuccess,
             onError: onError)
     }

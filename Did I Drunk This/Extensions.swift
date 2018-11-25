@@ -127,3 +127,13 @@ extension UIView{
     }
 
 }
+
+extension UIImageView{
+    func addGradientLayer(colors:[UIColor]){
+        let gradient = CAGradientLayer()
+        gradient.frame = CGRect(x: 0.0, y: 0.0, width: self.frame.width, height: self.frame.height)
+        gradient.colors = colors.map{$0.cgColor}
+        gradient.startPoint = CGPoint(x: 0.5, y: 0.0)
+        self.layer.addSublayer(gradient)
+    }
+}

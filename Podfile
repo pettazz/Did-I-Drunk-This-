@@ -11,6 +11,7 @@ target 'Did I Drunk This' do
   pod 'Alamofire-SwiftyJSON', '~> 3.0.0'
   pod 'Cosmos', '~> 16.0'
   pod 'KeychainAccess'
+  pod 'MBProgressHUD', '~> 1.1.0'
   pod 'OAuthSwift', '~> 1.2.0'
   pod 'OnboardKit'
   pod 'SwiftyJSON', '~> 4.0'
