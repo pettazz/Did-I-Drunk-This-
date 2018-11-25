@@ -85,7 +85,7 @@ class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITab
                         meRating: subJson["beer"]["auth_rating"].doubleValue
                     )
                     Alamofire.request(newBeer.imageURL).responseImage { response in
-                        newBeer.image = response.result.value!
+                        newBeer.image = response.result.value ?? UIImage(named: "beerPlaceholder")!
                     }
                     newBeerList.append(newBeer)
                 }
@@ -130,7 +130,7 @@ class BeerSearchViewController: UIViewController, UISearchResultsUpdating, UITab
             withURL: URL(string: beer.imageURL)!,
             placeholderImage: UIImage(named: "beerPlaceholder")!,
             completion: { response in
-                beer.image = response.result.value!
+                beer.image = response.result.value ?? UIImage(named: "beerPlaceholder")!
         })
         cell.ratingImage.isHidden = !beer.drunk
         cell.ratingLabel.isHidden = !beer.drunk

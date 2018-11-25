@@ -116,6 +116,11 @@ class BeerDetailViewController: UIViewController {
     }
 
     private func setColors(){
+        guard self.navigationController != nil else{
+            // user has already naviagted away before we were called
+            return
+        }
+        
         self.backgroundLayerView.backgroundColor = self.colors.primary
         self.backgroundLayerView.layer.borderColor = self.colors.background.lighter().cgColor
         self.backgroundLayerView.addShadow(to: [.bottom], radius: 3.0, fromColor: self.colors.background.darker(), toColor:self.colors.primary)
@@ -158,7 +163,7 @@ class BeerDetailViewController: UIViewController {
 
                 if(!beerData["beer_label_hd"].stringValue.isEmpty){
                     Alamofire.request(beerData["beer_label_hd"].stringValue).responseImage { response in
-                        self.beer!.image = response.result.value!
+                        self.beer!.image = response.result.value ?? UIImage(named: "beerPlaceholder")!
                         self.labelImage.image = self.beer!.image
                         self.colors = self.labelImage.image!.getColors(quality: .high)
 
